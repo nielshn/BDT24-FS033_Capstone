@@ -6,6 +6,14 @@
 @import "./navbar";
 
 @import "pages/home";
+@import "pages/details";
+@import "pages/cart";
+@import "pages/success";
+@import "pages/auth";
+@import "pages/dashboard";
 
 @import "components/categories";
 @import "components/products";
+@import "components/breadcrumbs";
+
+@import "transitions/slide-fade";
