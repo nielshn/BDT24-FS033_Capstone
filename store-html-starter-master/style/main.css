@@ -9229,6 +9229,7 @@ p {
 }
 .navbar-store .profile-picture {
   max-height: 45px;
+  border: 2px solid #00cec9;
 }
 .navbar-store .card-badge {
   display: inline-block;
@@ -9517,6 +9518,69 @@ p {
     margin-left: -15rem;
   }
 }
+.page-dashboard .section-content {
+  margin-top: 100px;
+}
+@media (min-width: 768px) {
+  .page-dashboard .section-content {
+    margin-top: 20px;
+    margin-left: 20px;
+  }
+}
+.page-dashboard .section-content h5 {
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 27px;
+  color: #0c0d36;
+}
+.page-dashboard .section-content .dashboard-title {
+  font-weight: normal;
+  font-size: 24px;
+  line-height: 36px;
+  color: #0c0d36;
+}
+.page-dashboard .section-content .dashboard-subtitle {
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 24px;
+  color: #9191a9;
+}
+.page-dashboard .section-content .product-title {
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 25px;
+  color: #c5c5c5;
+}
+.page-dashboard .section-content .product-subtitle {
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 30px;
+  color: #0c0d36;
+  margin-bottom: 20px;
+}
+.page-dashboard .section-content .nav-pills .nav-link {
+  font-weight: normal;
+  font-size: 18px;
+  color: #9191a9;
+  border-radius: 0;
+}
+.page-dashboard .section-content .nav-pills .nav-link.active {
+  font-weight: 500;
+  font-size: 18px;
+  color: #0c0d36;
+  border-bottom: 2px solid #0c0d36;
+  background: none;
+}
+.page-dashboard .section-content .gallery-container {
+  position: relative;
+  margin-bottom: 20px;
+}
+.page-dashboard .section-content .gallery-container .delete-gallery {
+  display: block;
+  position: absolute;
+  top: -10px;
+  right: 0;
+}
 
 .component-categories {
   background: #f4f4f4;
@@ -9591,6 +9655,49 @@ p {
 }
 .store-breadcrumbs a {
   color: #979797;
+}
+
+.card {
+  background: #fefefe;
+  box-shadow: 0px 4px 15px #f1f1f8;
+  border-radius: 8px;
+  border: none;
+  text-decoration: none !important;
+}
+.card .dashboard-card-title {
+  font-size: 16px;
+  line-height: 24px;
+  color: #c5c5c5;
+}
+.card .dashboard-card-subtitle {
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 48px;
+  color: #0c0d36;
+}
+
+.card-list {
+  margin-bottom: 10px;
+}
+.card-list .card-body {
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 40px;
+  color: #0c0d36;
+}
+
+.card-dashboard-product {
+  margin-bottom: 15px;
+}
+.card-dashboard-product .card-body .product-title {
+  font-weight: normal;
+  font-size: 18px;
+  color: #0c0d36;
+}
+.card-dashboard-product .card-body .product-category {
+  font-weight: normal;
+  font-size: 16px;
+  color: #c5c5c5;
 }
 
 .slide-fade-enter-active {
