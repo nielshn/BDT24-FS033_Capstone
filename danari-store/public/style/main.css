@@ -9424,8 +9424,8 @@ p {
   min-height: 70vh;
 }
 .page-auth .section-store-auth h2 {
-  font-weight: 200;
   font-size: 28px;
+  font-weight: 200;
   margin-top: 0;
   color: #0c0d30;
 }
@@ -9462,6 +9462,25 @@ p {
 }
 .page-auth .section-store-auth .btn-signup:not(:disabled):not(.disabled):active:focus, .page-auth .section-store-auth .btn-signup:not(:disabled):not(.disabled).active:focus, .show > .page-auth .section-store-auth .btn-signup.dropdown-toggle:focus {
   box-shadow: 0 0 0 0.2rem rgba(33, 37, 41, 0.5);
+}
+.page-auth .section-store-auth .remember-forgot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 75%;
+}
+.page-auth .section-store-auth .remember-forgot label {
+  margin: 0;
+}
+.page-auth .section-store-auth .remember-forgot a {
+  text-decoration: none;
+  color: #6c757d;
+  margin-left: auto;
+  padding-left: 10px;
+}
+.page-auth .section-store-auth .remember-forgot a:hover {
+  color: #333;
+  text-decoration: underline;
 }
 
 .page-dashboard #page-content-wrapper {
