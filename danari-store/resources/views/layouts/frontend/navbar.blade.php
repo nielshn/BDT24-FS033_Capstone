@@ -16,12 +16,14 @@
                 <li class="nav-item">
                     <a href="#" class="nav-link">Rewards</a>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ route('register') }}" class="nav-link">Sign Up</a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('login') }}" class="btn btn-success nav-link">Sign In</a>
-                </li>
+                @guest
+                    <li class="nav-item">
+                        <a href="{{ route('register') }}" class="nav-link">Sign Up</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('login') }}" class="btn btn-success nav-link">Sign In</a>
+                    </li>
+                @endguest
             </ul>
         </div>
     </div>

@@ -14,20 +14,20 @@ class RolePermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        $adminRole = Role::create([
-            'name' => 'admin',
-        ]);
+        // Create roles
+        Role::create(['name' => 'customer']);
+        Role::create(['name' => 'seller']);
+        $adminRole = Role::create(['name' => 'admin']);
 
-        $userRole = Role::create([
-            'name' => 'user',
-        ]);
-
+        // Create admin user
         $userOwner = User::create([
             'name' => 'DANARI STORE',
             'email' => 'dsiahaan581@gmail.com',
             'password' => bcrypt('danari@store'),
+            'avatar' => 'images/user-icon.png',
         ]);
 
+        // Assign role to the admin user
         $userOwner->assignRole($adminRole);
     }
 }

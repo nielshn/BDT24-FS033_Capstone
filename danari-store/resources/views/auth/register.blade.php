@@ -5,7 +5,7 @@
                 <div class="row align-items-center justify-content-center row-login">
                     <div class="col-lg-4">
                         <h2>Memulai untuk jual beli<br />dengan cara terbaru</h2>
-                        <form method="POST" action="{{ route('register') }}" class="mt-3">
+                        <form method="POST" action="{{ route('register') }}" class="mt-3" enctype="multipart/form-data">
                             @csrf
 
                             <!-- Full Name -->
@@ -24,6 +24,13 @@
                                 <x-input-error :messages="$errors->get('email')" class="mt-2" />
                             </div>
 
+                            <!-- Avatar -->
+                            <div class="form-group mt-4">
+                                <label for="avatar">Avatar</label>
+                                <input type="file" name="avatar" id="avatar" class="form-control" required
+                                    autocomplete="avatar" />
+                                <x-input-error :messages="$errors->get('avatar')" class="mt-2" />
+                            </div>
                             <!-- Password -->
                             <div class="form-group mt-4">
                                 <label for="password">Password</label>
@@ -58,15 +65,15 @@
 
                             <!-- Store Name (Conditional) -->
                             <div class="form-group mt-4" v-if="is_store_open === 'true'">
-                                <label for="tokoName">Nama Toko</label>
-                                <input type="text" name="tokoName" id="tokoName" class="form-control"
+                                <label for="store_name">Nama Toko</label>
+                                <input type="text" name="store_name" id="store_name" class="form-control"
                                     v-model="store_name" />
                             </div>
 
                             <!-- Category (Conditional) -->
                             <div class="form-group mt-4" v-if="is_store_open === 'true'">
                                 <label for="category">Kategori</label>
-                                <select name="category" class="form-control" id="category">
+                                <select name="categories_id" class="form-control" id="category">
                                     <option value="" disabled>Select Category</option>
                                     <!-- Populate options here -->
                                 </select>
@@ -111,7 +118,6 @@
                 data: {
                     name: "{{ old('name') }}",
                     email: "{{ old('email') }}",
-                    password: "",
                     is_store_open: "{{ old('is_store_open', 'false') }}",
                     store_name: "{{ old('store_name') }}",
                 },

@@ -11,31 +11,55 @@
             <ul class="navbar-nav d-none d-lg-flex ml-auto">
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link" id="navbarDropdown" role="button" data-toggle="dropdown">
-                        <img src="/images/icon-user.png" alt="profile" class="rounded-circle mr-2 profile-picture" />
-                        Hi, Danari
+                        <img src="{{ Storage::url(Auth::user()->avatar) }}" alt="profile"
+                            class="rounded-circle mr-2 profile-picture" />
+                        Hi, {{ Auth::user()->name }}
                     </a>
                     <div class="dropdown-menu">
-                        <a href="/dashboard.html" class="dropdown-item">Dashboard</a>
-                        <a href="/dashboard-account.html" class="dropdown-item">Settings</a>
-                        <div class="dropdown-divider"></div>
-                        <a href="/" class="dropdown-item">Logout</a>
+                        @role('admin')
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <x-dropdown-link :href="route('logout')"
+                                    onclick="event.preventDefault();
+                                                    this.closest('form').submit();">
+                                    {{ __('Log Out') }}
+                                </x-dropdown-link>
+                            </form>
+                        @else
+                            <a href="{{ route('home') }}" class="dropdown-item">Home</a>
+                            <a href="/dashboard-account.html" class="dropdown-item">Settings</a>
+                            <div class="dropdown-divider"></div>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <x-dropdown-link :href="route('logout')"
+                                    onclick="event.preventDefault();
+                                                    this.closest('form').submit();">
+                                    {{ __('Log Out') }}
+                                </x-dropdown-link>
+                            </form>
+                        @endrole
                     </div>
                 </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link d-inline-block mt-2">
-                        <img src="/images/icon-cart-filled.svg" alt="icon cart filled" />
-                        <div class="card-badge">3</div>
-                    </a>
-                </li>
+                @role('admin')
+                @else
+                    <li class="nav-item">
+                        <a href="#" class="nav-link d-inline-block mt-2">
+                            <img src="/images/icon-cart-filled.svg" alt="icon cart filled" />
+                            <div class="card-badge">3</div>
+                        </a>
+                    </li>
+                @endrole
             </ul>
             <ul class="navbar-nav d-block d-lg-none">
                 <li class="nav-item">
-                    <a href="#" class="nav-link">Hi, Danari</a>
+                    <a href="#" class="nav-link">Hi {{ Auth::user()->name }}</a>
                 </li>
-                {{-- Owner no need cart --}}
-                <li class="nav-item">
-                    <a href="#" class="nav-link d-inline-block">Cart</a>
-                </li>
+                @role('admin')
+                @else
+                    <li class="nav-item">
+                        <a href="#" class="nav-link d-inline-block">Cart</a>
+                    </li>
+                @endrole
             </ul>
         </div>
     </div>
