@@ -1,7 +1,6 @@
-@extends('layouts.backend.main')
-@section('title')
-    Transaction Details Store
-@endsection
+@extends('dashboard')
+@section('title', 'Transaction Details')
+
 @section('content')
     <div class="section-content section-dashboard-home" data-aos="fade-up">
         <div class="container-fluid">

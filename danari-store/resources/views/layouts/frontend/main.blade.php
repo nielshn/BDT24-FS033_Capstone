@@ -17,7 +17,7 @@
 <body>
 
     {{-- Navbar --}}
-    @include('includes.navbar')
+    @include('layouts.frontend.navbar')
 
     {{-- Page Content --}}
     @yield('content')

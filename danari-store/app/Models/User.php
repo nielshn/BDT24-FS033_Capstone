@@ -21,7 +21,16 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        ''
+        'store_name',
+        'categories_id',
+        'store_status',
+        'address_one',
+        'address_two',
+        'provinces_id',
+        'regencies_id',
+        'zip_code',
+        'country',
+        'phone_number',
     ];
 
     /**
@@ -32,6 +41,9 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'created_at' => 'datetime:Y-m-d H:m:s',
+        'updated_at' => 'datetime:Y-m-d H:m:s',
+        'deleted_at' => 'datetime:Y-m-d H:m:s',
     ];
 
     /**

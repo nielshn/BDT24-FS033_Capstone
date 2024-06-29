@@ -1,7 +1,6 @@
 @extends('layouts.frontend.main')
-@section('title')
-    DANARI STORE - Home Page
-@endsection
+@section('title', 'Home Page')
+
 @section('content')
     <div class="page-content page-home">
         <section class="store-carousel">

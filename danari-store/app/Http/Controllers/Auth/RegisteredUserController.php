@@ -32,7 +32,10 @@ class RegisteredUserController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', 'string', 'min:8', 'confirmed', Rules\Password::defaults()],
+            'store_name' => ['sometimes', 'string', 'max:255'],
+            'categories_id' => ['nullable', 'integer', 'exists:categories,id'],
+            'is_store_open' => ['required'],
         ]);
 
         $user = User::create([

@@ -1,8 +1,6 @@
-@extends('layouts.backend.main')
+@extends('dashboard')
 
-@section('title')
-    My Product - DANARI STORE
-@endsection
+@section('title', 'My Products')
 
 @section('content')
     <div class="section-content section-dashboard-home" data-aos="fade-up">

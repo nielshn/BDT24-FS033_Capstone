@@ -3,26 +3,27 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('frontend.home');
-});
-
-
-Route::view('category', 'frontend.category');
-Route::view('product-details', 'frontend.product-details');
+// User Routes
+Route::view('/', 'frontend.home');
+Route::view('categories', 'frontend.category');
+Route::view('details', 'frontend.product-details');
 Route::view('cart', 'frontend.cart');
 Route::view('success', 'frontend.success');
+Route::view('my-dashboard', 'dashboard');
+Route::view('my-products', 'frontend.products.index');
+Route::view('product-details', 'frontend.products.show');
+Route::view('create-product', 'frontend.products.create');
+Route::view('transactions', 'frontend.transactions.index');
+Route::view('transaction-details', 'frontend.transactions.show');
+Route::view('store-settings', 'frontend.store-settings');
+
 Route::view('register-success', 'auth.register-success');
-
-
-Route::view('dashboard-admin', 'backend.dashboard');
-Route::view('my-products', 'backend.products.index');
-Route::view('product-details', 'backend.products.show');
-Route::view('create-product', 'backend.products.create');
-Route::view('transactions', 'backend.transactions.index');
-Route::view('transaction-details', 'backend.transactions.show');
-Route::view('store-settings', 'backend.store-settings');
 Route::view('account-settings', 'auth.account-settings');
+
+// Admin routes
+Route::prefix('admin')->name('admin.')->group(function () {
+    // Route::view('dashboard', '')
+});
 
 
 Route::get(

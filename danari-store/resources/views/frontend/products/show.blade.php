@@ -1,8 +1,6 @@
-@extends('layouts.backend.main')
+@extends('dashboard')
 
-@section('title')
-    Product Details - DANARI STORE
-@endsection
+@section('title', 'Product Details')
 
 @section('content')
     <!-- Section Content -->

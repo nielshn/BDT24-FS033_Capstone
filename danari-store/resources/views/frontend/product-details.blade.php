@@ -1,7 +1,6 @@
 @extends('layouts.frontend.main')
-@section('title')
-    Product Details - DANARI STORE
-@endsection
+@section('title', 'Product Details')
+
 @section('content')
     <div class="page-content page-details">
         <section class="store-breadcrumbs" data-aos="fade-down" data-aos-delay="100">

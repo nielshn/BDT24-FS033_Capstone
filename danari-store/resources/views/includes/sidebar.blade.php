@@ -1,5 +1,6 @@
 <div class="border-right" id="sidebar-wrapper">
     <div class="sidebar-heading text-center">
+        {{-- if roles is admin : image admin.png --}}
         <img src="/images/dashboard-store-logo.svg" class="my-4" alt="logo dashboard" />
     </div>
     <div class="list-group list-group-flush">

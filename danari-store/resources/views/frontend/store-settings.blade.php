@@ -1,7 +1,5 @@
-@extends('layouts.backend.main')
-@section('title')
-    Store Settings
-@endsection
+@extends('layouts.frontend.dashboard')
+@section('title', 'Store Settings')
 
 @section('content')
     <div class="section-content section-dashboard-home" data-aos="fade-up">

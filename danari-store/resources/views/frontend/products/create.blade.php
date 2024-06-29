@@ -1,7 +1,7 @@
-@extends('layouts.backend.main')
-@section('title')
-    Create Product - DANARI STORE
-@endsection
+@extends('dashboard')
+
+@section('title', 'Create Product')
+
 @section('content')
     <div class="section-content section-dashboard-home" data-aos="fade-up">
         <div class="container-fluid">
@@ -81,7 +81,7 @@
         </div>
     </div>
 @endsection
-{{-- 
+{{--
 @push('addon-style')
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
