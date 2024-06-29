@@ -12,7 +12,7 @@
                         <nav>
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item">
-                                    <a href="/index.html">Home</a>
+                                    <a href="{{ route('front.home') }}">Home</a>
                                 </li>
                                 <li class="breadcrumb-item active">Cart</li>
                             </ol>
@@ -176,7 +176,7 @@
                         <div class="product-subtitle">Total</div>
                     </div>
                     <div class="col-8 col-md-3">
-                        <a href="/success.html" class="btn btn-success mt-4 btn-block">
+                        <a href="{{ route('front.success') }}" class="btn btn-success mt-4 btn-block">
                             Checkout Now</a>
                     </div>
                 </div>

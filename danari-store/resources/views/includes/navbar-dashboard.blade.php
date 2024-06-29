@@ -26,7 +26,7 @@
                                 </x-dropdown-link>
                             </form>
                         @else
-                            <a href="{{ route('home') }}" class="dropdown-item">Home</a>
+                            <a href="{{ route('front.home') }}" class="dropdown-item">Home</a>
                             <a href="/dashboard-account.html" class="dropdown-item">Settings</a>
                             <div class="dropdown-divider"></div>
                             <form method="POST" action="{{ route('logout') }}">
@@ -43,7 +43,7 @@
                 @role('admin')
                 @else
                     <li class="nav-item">
-                        <a href="#" class="nav-link d-inline-block mt-2">
+                        <a href="{{ route('front.cart') }}" class="nav-link d-inline-block mt-2">
                             <img src="/images/icon-cart-filled.svg" alt="icon cart filled" />
                             <div class="card-badge">3</div>
                         </a>

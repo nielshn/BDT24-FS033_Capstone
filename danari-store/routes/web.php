@@ -2,29 +2,26 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FrontController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
 
 // User Routes
-Route::view('/', 'frontend.home')->name('home');
-Route::view('categories', 'frontend.category');
-Route::view('details', 'frontend.product-details');
-Route::view('cart', 'frontend.cart');
-Route::view('success', 'frontend.success');
-Route::view('my-dashboard', 'das@hboard');
-Route::view('my-products', 'frontend.products.index');
-Route::view('product-details', 'frontend.products.show');
-Route::view('create-product', 'frontend.products.create');
-Route::view('transactions', 'frontend.transactions.index');
-Route::view('transaction-details', 'frontend.transactions.show');
-Route::view('store-settings', 'frontend.store-settings');
 
-Route::view('register-success', 'auth.register-success');
-Route::view('account-settings', 'auth.account-settings');
-
-
+Route::get('/', [FrontController::class, 'index'])->name('front.home');
+Route::get('categories', [FrontController::class, 'categories'])->name('front.category');
+Route::get('details', [FrontController::class, 'details'])->name('front.details');
+Route::get('cart', [FrontController::class, 'cart'])->name('front.cart');
+Route::get('success', [FrontController::class, 'success'])->name('front.success');
+Route::get('register-success', [FrontController::class, 'registerSuccess'])->name('front.registerSuccess');
+Route::resource('products', ProductController::class);
+Route::resource('transactions', TransactionController::class);
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('store-settings', [DashboardController::class, 'storeSettings'])->name('dashboard.storeSettings');
+Route::get('account-settings', [DashboardController::class, 'accountSettings'])->name('dashboard.accountSettings');
 
 
 

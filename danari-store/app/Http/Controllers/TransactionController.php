@@ -12,7 +12,7 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        //
+        return view('frontend.transactions.index');
     }
 
     /**

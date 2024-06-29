@@ -1,4 +1,4 @@
-@extends('layouts.backend.main')
+@extends('dashboard')
 @section('title')
     Account Settings Store
 @endsection

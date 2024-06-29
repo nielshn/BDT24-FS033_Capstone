@@ -54,7 +54,7 @@
                             <div class="price">$1,489</div>
                         </div>
                         <div class="col-lg-2" data-aos="zoom-in">
-                            <a href="/cart.html" class="btn btn-success px-4 text-white btn-block mb-3">Add to Cart</a>
+                            <a href="{{ route('front.cart') }}" class="btn btn-success px-4 text-white btn-block mb-3">Add to Cart</a>
                         </div>
                     </div>
                 </div>

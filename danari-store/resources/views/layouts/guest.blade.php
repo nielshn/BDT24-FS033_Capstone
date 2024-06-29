@@ -19,7 +19,7 @@
 </head>
 
 <body class="font-sans text-gray-900 antialiased">
-    @include('includes.navbar-auth')
+    @include('includes.navbar')
 
     {{ $slot }}
 

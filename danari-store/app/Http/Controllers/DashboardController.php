@@ -11,4 +11,13 @@ class DashboardController extends Controller
     {
         return view('dashboard');
     }
+
+    public function storeSettings()
+    {
+        return view('frontend.store-settings');
+    }
+
+    public function accountSettings(){
+        return view('auth.account-settings');
+    }
 }

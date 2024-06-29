@@ -8,31 +8,56 @@
     </div>
     @role('admin')
         <div class="list-group list-group-flush">
-            <a href="{{ route('dashboard') }}" class="list-group-item list-group-item-action active">Dashboard</a>
-            <a href="/dashboard-products.html" class="list-group-item list-group-item-action">All Products</a>
-            <a href="/dashboard-categories.html" class="list-group-item list-group-item-action">Categories</a>
-            <a href="/dashboard-transactions.html" class="list-group-item list-group-item-action">Transactions</a>
+            <a href="{{ route('dashboard') }}" class="list-group-item list-group-item-action">Dashboard</a>
+            <a href="{{ route('products.index') }}" class="list-group-item list-group-item-action">All Products</a>
+            <a href="{{ route('admin.categories.index') }}" class="list-group-item list-group-item-action">Categories</a>
+            <a href="{{ route('transactions.index') }}" class="list-group-item list-group-item-action">Transactions</a>
             <a href="/dashboard-admin-users.html" class="list-group-item list-group-item-action">Users</a>
-            <a href="/index.html" class="list-group-item list-group-item-action">Sign Out</a>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <a href="route('logout')"
+                    onclick="event.preventDefault();
+                                    this.closest('form').submit();">
+                    {{ __('Log Out') }}
+                </a>
+            </form>
         </div>
     @endrole
     @role('seller')
         <div class="list-group list-group-flush">
-            <a href="{{ route('dashboard') }}" class="list-group-item list-group-item-action active">Dashboard</a>
-            <a href="/dashboard-products.html" class="list-group-item list-group-item-action">My Products</a>
-            <a href="/dashboard-transactions.html" class="list-group-item list-group-item-action">Transaction Orders</a>
-            <a href="/dashboard-store-settings.html" class="list-group-item list-group-item-action">Store Settings</a>
-            <a href="/dashboard-account.html" class="list-group-item list-group-item-action">My Account</a>
-            <a href="/index.html" class="list-group-item list-group-item-action">Sign Out</a>
+            <a href="{{ route('dashboard') }}" class="list-group-item list-group-item-action">Dashboard</a>
+            <a href="{{ route('products.index') }}" class="list-group-item list-group-item-action">My Products</a>
+            <a href="{{ route('transactions.index') }}" class="list-group-item list-group-item-action">Transaction
+                Orders</a>
+            <a href="{{ route('dashboard.storeSettings') }}" class="list-group-item list-group-item-action">Store
+                Settings</a>
+            <a href="{{ route('dashboard.accountSettings') }}" class="list-group-item list-group-item-action">My
+                Account</a>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <a href="route('logout')" class="list-group-item list-group-item-action"
+                    onclick="event.preventDefault();
+                                        this.closest('form').submit();">
+                    {{ __('Log Out') }}
+                </a>
+            </form>
         </div>
     @endrole
     @role('customer')
         <div class="list-group list-group-flush">
-            <a href="{{ route('dashboard') }}" class="list-group-item list-group-item-action active">Dashboard</a>
+            <a href="{{ route('dashboard') }}" class="list-group-item list-group-item-action">Dashboard</a>
             <a href="/dashboard-orders.html" class="list-group-item list-group-item-action">My Orders</a>
-            <a href="/dashboard-transactions.html" class="list-group-item list-group-item-action">Transactions</a>
-            <a href="/dashboard-account.html" class="list-group-item list-group-item-action">My Account</a>
-            <a href="/index.html" class="list-group-item list-group-item-action">Sign Out</a>
+            <a href="{{ route('transactions.index') }}" class="list-group-item list-group-item-action">Transactions</a>
+            <a href="{{ route('dashboard.accountSettings') }}" class="list-group-item list-group-item-action">My
+                Account</a>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <a href="route('logout')" class="list-group-item list-group-item-action"
+                    onclick="event.preventDefault();
+                                            this.closest('form').submit();">
+                    {{ __('Log Out') }}
+                </a>
+            </form>
         </div>
     @endrole
 </div>
