@@ -1,4 +1,5 @@
-@section('title', 'Dashboard Store')
+@section('title', 'My Account Store')
+
 <x-app-layout>
     <div class="section-content section-dashboard-home" data-aos="fade-up">
         <div class="container-fluid">

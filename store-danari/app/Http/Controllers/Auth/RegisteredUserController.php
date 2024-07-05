@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Store;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -33,10 +34,10 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'avatar' => ['required', 'image', 'mimes:png,jpg,jpeg'],
-            'is_store_open' => ['required'],
+            'is_store_open' => ['required', 'boolean'],
             'store_name' => ['nullable', 'required_if:is_store_open,true', 'string', 'max:255'],
             'categories_id' => ['nullable', 'required_if:is_store_open,true', 'integer', 'exists:categories,id'],
         ]);
@@ -52,12 +53,15 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'avatar' => $avatarPath,
-            'store_name' => $request->store_name,
-            'categories_id' => $request->categories_id,
-            'store_status' => $request->is_store_open === 'true' ? 1 : 0,
         ]);
 
-        if ($request->is_store_open === 'true') {
+        if ($request->is_store_open) {
+            Store::create([
+                'user_id' => $user->id,
+                'name' => $request->store_name,
+                'categories_id' => $request->categories_id,
+                'status' => 1,
+            ]);
             $user->assignRole('seller');
         } else {
             $user->assignRole('customer');
@@ -67,6 +71,6 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect()->route('dashboard');
     }
 }

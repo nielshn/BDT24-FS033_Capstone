@@ -2,61 +2,108 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        return view('frontend.products.index');
+        $products = Product::where('users_id', Auth::id())->get();
+        return view('frontend.products.index', compact('products'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        return view('frontend.products.create');
+        $categories = Category::all();
+        return view('frontend.products.create', compact('categories'));
     }
 
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
-        //
+        $validated = $request->validated();
+        $validated['slug'] = Str::slug($validated['name']);
+        $validated['users_id'] = Auth::id();
+
+        DB::transaction(function () use ($validated, $request) {
+            $product = Product::create($validated);
+
+            if ($request->hasFile('photos')) {
+                foreach ($request->file('photos') as $photo) {
+                    $fileName = time() . '_' . $photo->getClientOriginalName();
+                    $filePath = $photo->storeAs('productGalery', $fileName, 'public');
+
+                    $product->productGaleries()->create([
+                        'photos' => $filePath,
+                    ]);
+                }
+            }
+        });
+
+        return redirect()->route('products.index')->with('success', 'Product created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Product $product)
     {
-        //
+        return view('frontend.products.show', compact('product'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Product $product)
     {
-        //
+        $categories = Category::all();
+        return view('frontend.products.edit', compact('product', 'categories'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Product $product)
+    public function update(UpdateProductRequest $request, Product $product)
     {
-        //
+
+        DB::transaction(function () use ($request, $product) {
+            $validated = $request->validated();
+            $product->update($validated);
+
+            if ($request->hasFile('photos')) {
+                foreach ($product->productGaleries as $gallery) {
+                    Storage::disk('public')->delete($gallery->photos);
+                    $gallery->delete();
+                }
+
+                foreach ($request->file('photos') as $photo) {
+                    $fileName = time() . '_' . $photo->getClientOriginalName();
+                    $filePath = $photo->storeAs('productGalery', $fileName, 'public');
+
+                    $product->productGaleries()->create([
+                        'photos' => $filePath,
+                    ]);
+                }
+            }
+        });
+
+        return redirect()->route('products.index')->with('success', 'Product updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Product $product)
     {
-        //
+        DB::beginTransaction();
+        try {
+            foreach ($product->productGaleries as $gallery) {
+                Storage::disk('public')->delete($gallery->photos);
+                $gallery->delete();
+            }
+
+            $product->delete();
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('products.index')->with('error', 'Failed to delete product.');
+        }
+
+        return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
     }
 }

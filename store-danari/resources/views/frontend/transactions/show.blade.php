@@ -1,15 +1,14 @@
-@extends('dashboard')
 @section('title', 'Transaction Details')
 
-@section('content')
+<x-app-layout>
     <div class="section-content section-dashboard-home" data-aos="fade-up">
         <div class="container-fluid">
-            <div class="dashboard-heading">
-                <h2 class="dashboard-title">#STORE0839</h2>
-                <p class="dashboard-subtitle">
-                    Big result start from the small one
-                </p>
-            </div>
+            <x-slot name="header">
+                <div class="items-center bg-indigo-100 px-6 py-4 rounded-md shadow-md">
+                    <h2 class="text-2xl font-semibold text-indigo-900 leading-tight mb-2">#STORE0839</h2>
+                    <p class="text-0xl"> Big result start from the small one</p>
+                </div>
+            </x-slot>
             <div class="dashboard-content" id="transactionDetails">
                 <div class="row">
                     <div class="col-12">
@@ -95,7 +94,8 @@
                                             </div>
                                             <div class="col-12 col-md-3">
                                                 <div class="product-title">Shipping Status</div>
-                                                <select name="status" id="status" class="form-control" v-model="status">
+                                                <select name="status" id="status" class="form-control"
+                                                    v-model="status">
                                                     <option value="PENDING">Pending</option>
                                                     <option value="SHIPPING">Shipping</option>
                                                     <option value="SUCCESS">Success</option>
@@ -130,40 +130,40 @@
             </div>
         </div>
     </div>
-@endsection
+    @push('addon-script')
+        {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+    </script> --}}
+        <script src="/vendor/vue/vue.js"></script>
+        <script>
+            var transactionDetails = new Vue({
+                el: "#transactionDetails",
+                data: {
+                    status: "SHIPPING",
+                    resi: "JNE20839149021029301231",
+                },
+                created: function() {
+                    this.getTransactions();
+                },
+                methods: {
+                    getTransactions: function() {
+                        axios
+                            .get("http://localhost:3000/transactions")
+                            .then((response) => {
+                                this.transactions = response.data;
+                            })
+                            .catch((error) => {
+                                console.log(error);
+                            });
+                    },
+                },
+            });
+        </script>
+    @endpush
+
+</x-app-layout>
 
 {{-- @push('addon-style')
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
 @endpush --}}
-
-@push('addon-script')
-    {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-    </script> --}}
-    <script src="/vendor/vue/vue.js"></script>
-    <script>
-        var transactionDetails = new Vue({
-            el: "#transactionDetails",
-            data: {
-                status: "SHIPPING",
-                resi: "JNE20839149021029301231",
-            },
-            created: function() {
-                this.getTransactions();
-            },
-            methods: {
-                getTransactions: function() {
-                    axios
-                        .get("http://localhost:3000/transactions")
-                        .then((response) => {
-                            this.transactions = response.data;
-                        })
-                        .catch((error) => {
-                            console.log(error);
-                        });
-                },
-            },
-        });
-    </script>
-@endpush

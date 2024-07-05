@@ -17,22 +17,11 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-
             $table->string('avatar');
-            $table->text('address_one')->nullable();
-            $table->text('address_two')->nullable();
-            $table->integer('provinces_id')->nullable();
-            $table->integer('regencies_id')->nullable();
-            $table->integer('zip_code')->nullable();
-            $table->string('country')->nullable();
             $table->string('phone_number')->nullable();
-            $table->string('store_name')->nullable();
-            $table->integer('categories_id')->nullable();
-            $table->integer('store_status')->default(0);
-            $table->softDeletes();
-
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

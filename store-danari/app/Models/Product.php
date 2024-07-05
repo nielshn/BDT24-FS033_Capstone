@@ -31,7 +31,7 @@ class Product extends Model
         return $this->belongsTo(Category::class, 'category_id');
     }
 
-    public function galleries()
+    public function productGaleries()
     {
         return $this->hasMany(ProductGalery::class);
     }

@@ -17,17 +17,9 @@ class User extends Authenticatable
         'email',
         'password',
         'avatar',
-        'store_name',
-        'categories_id',
-        'store_status',
-        'address_one',
-        'address_two',
-        'provinces_id',
-        'regencies_id',
-        'zip_code',
-        'country',
         'phone_number',
     ];
+
 
     protected $hidden = [
         'password',
@@ -38,6 +30,16 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function address()
+    {
+        return $this->hasOne(Address::class);
+    }
+
+    public function store()
+    {
+        return $this->hasOne(Store::class);
+    }
 
     public function products()
     {

@@ -31,13 +31,13 @@
             <a href="{{ route('dashboard') }}"
                 class="list-group-item list-group-item-action {{ request()->routeIs('dashboard') ? 'active' : '' }}">Dashboard</a>
             <a href="{{ route('products.index') }}"
-                class="list-group-item list-group-item-action {{ request()->routeIs('products.index') ? 'active' : '' }}">My
+                class="list-group-item list-group-item-action {{ request()->is('products*') ? 'active' : '' }}">My
                 Products</a>
             <a href="{{ route('transactions.index') }}"
-                class="list-group-item list-group-item-action {{ request()->routeIs('transactions.index') ? 'active' : '' }}">Transaction
-                Orders</a>
-            <a href="{{ route('dashboard.storeSettings') }}"
-                class="list-group-item list-group-item-action {{ request()->routeIs('dashboard.storeSettings') ? 'active' : '' }}">Store
+                class="list-group-item list-group-item-action {{ request()->routeIs('transactions.index') ? 'active' : '' }}">Transactions
+            </a>
+            <a href="{{ route('store-settings.index') }}"
+                class="list-group-item list-group-item-action {{ request()->routeIs('store-settings.index') ? 'active' : '' }}">Store
                 Settings</a>
             <a href="{{ route('dashboard.accountSettings') }}"
                 class="list-group-item list-group-item-action {{ request()->routeIs('dashboard.accountSettings') ? 'active' : '' }}">My
@@ -55,7 +55,7 @@
         <div class="list-group list-group-flush">
             <a href="{{ route('dashboard') }}"
                 class="list-group-item list-group-item-action {{ request()->routeIs('dashboard') ? 'active' : '' }}">Dashboard</a>
-            <a href="/dashboard-orders.html"
+            <a href="#"
                 class="list-group-item list-group-item-action {{ request()->is('dashboard-orders*') ? 'active' : '' }}">My
                 Orders</a>
             <a href="{{ route('transactions.index') }}"

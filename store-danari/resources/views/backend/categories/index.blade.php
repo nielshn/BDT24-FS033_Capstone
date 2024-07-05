@@ -40,11 +40,11 @@
                                                 <th>No</th>
                                                 <th>Name</th>
                                                 <th>Icon</th>
+                                                <th>Slug</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <!-- Table content will be loaded here by DataTables -->
                                         </tbody>
                                     </table>
                                 </div>

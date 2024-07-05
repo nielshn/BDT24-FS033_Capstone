@@ -1,14 +1,14 @@
-@extends('dashboard')
+@section('title', 'Products Store')
 
-@section('title', 'My Products')
-
-@section('content')
+<x-app-layout>
     <div class="section-content section-dashboard-home" data-aos="fade-up">
         <div class="container-fluid">
-            <div class="dashboard-heading">
-                <h2 class="dashboard-title">My Products</h2>
-                <p class="dashboard-subtitle">Manage it well and get money</p>
-            </div>
+            <x-slot name="header">
+                <div class="items-center bg-indigo-100 px-6 py-4 rounded-md shadow-md">
+                    <h2 class="text-2xl font-semibold text-indigo-900 leading-tight mb-2">My Products</h2>
+                    <p class="text-0xl">Manage it well and get money</p>
+                </div>
+            </x-slot>
             <div class="dashboard-content">
                 <div class="row">
                     <div class="col-12">
@@ -63,6 +63,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
-@endsection
+</x-app-layout>

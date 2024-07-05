@@ -54,7 +54,7 @@
                     <x-nav-link :href="route('transactions.index')" :active="request()->routeIs('transactions.index')">
                         {{ __('Transactions') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('dashboard.storeSettings')" :active="request()->routeIs('dashboard.storeSettings')">
+                    <x-nav-link :href="route('store-settings.index')" :active="request()->routeIs('store-settings.index')">
                         {{ __('Store Settings') }}
                     </x-nav-link>
                     <x-nav-link :href="route('dashboard.accountSettings')" :active="request()->routeIs('dashboard.accountSettings')">
