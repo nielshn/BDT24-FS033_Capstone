@@ -73,4 +73,9 @@ class RegisteredUserController extends Controller
 
         return redirect()->route('dashboard');
     }
+
+    public function check(Request $request)
+    {
+        return  User::where('email', $request->email)->count() > 0 ? 'Unvailable' : 'Available';
+    }
 }

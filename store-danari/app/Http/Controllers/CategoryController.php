@@ -23,12 +23,11 @@ class CategoryController extends Controller
         if ($request->ajax()) {
             $data = Category::query()->orderByDesc('id');
             return DataTables::of($data)
-                ->addIndexColumn() // Menambahkan kolom index
                 ->addColumn('index_no', function () {
                     return '<span></span>';
                 })
                 ->addColumn('action', function ($category) {
-                    return view('backend.categories.partials.actions', compact('category'))->render();
+                    return view('backend.categories._action', compact('category'))->render();
                 })
                 ->editColumn('icon', function ($category) {
                     return $category->icon ? '<img src="' . Storage::url($category->icon) . '" style="max-height: 40px;"/>' : '';
@@ -108,7 +107,7 @@ class CategoryController extends Controller
         try {
             DB::transaction(function () use ($category) {
                 if ($category->icon && Storage::exists($category->icon)) {
-                    Storage::delete($category->icon);
+                    Storage::disk('public')->delete($category->icon);
                 }
                 $category->delete();
             });

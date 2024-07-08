@@ -2,6 +2,7 @@
 <x-app-layout>
     <div class="section-content section-dashboard-home" data-aos="fade-up">
         <div class="container-fluid mb-4">
+            @include('layouts.backend.session-message')
             <x-slot name="header">
                 <div class="flex justify-between items-center bg-indigo-100 px-4 py-3 rounded-md shadow-md">
                     <h2 class="text-2xl font-semibold text-indigo-900 leading-tight">Manage Categories</h2>
@@ -20,7 +21,6 @@
             <div class="dashboard-content">
                 <div class="row">
                     <div class="col-md-12">
-                        @include('layouts.backend.session-message')
                         <div class="card shadow-lg rounded-lg border-0">
                             <div class="card-body">
                                 <a href="{{ route('admin.categories.create') }}"

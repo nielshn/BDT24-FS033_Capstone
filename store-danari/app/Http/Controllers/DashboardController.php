@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UpdateAddressRequest;
 use App\Http\Requests\UpdateStoreSettingsRequest;
 use App\Models\Category;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
 
 class DashboardController extends Controller
 {
@@ -17,32 +19,26 @@ class DashboardController extends Controller
         return view('dashboard');
     }
 
-    public function storeSettings()
+    public function allProducts(Request $request)
     {
-        $user = Auth::user();
-        if (!$user->hasRole('seller')) {
-            abort(403, 'Unauthorized action.');
+        $search = $request->input('search');
+        $query = Product::with(['user', 'productGaleries', 'category']);
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('description', 'like', '%' . $search . '%')
+                    ->orWhereHas('user', function ($subQuery) use ($search) {
+                        $subQuery->where('name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('category', function ($subQuery) use ($search) {
+                        $subQuery->where('name', 'like', '%' . $search . '%');
+                    });
+            });
         }
 
-        $store = $user->store;
-        $category = $store->where('user_id', $user->id)->get();
-        return view('frontend.store-settings', compact('category', 'store'));
-    }
-
-    public function storeSettingsUpdate(UpdateStoreSettingsRequest $request)
-    {
-        $user = Auth::user();
-        if (!$user->hasRole('seller')) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        DB::transaction(function () use ($user, $request) {
-            $validated = $request->validated();
-            $store = $user->store;
-            $store->update($validated);
-        });
-
-        return redirect()->route('store.settings')->with(['success' => 'Store settings updated successfully.']);
+        $products = $query->orderByDesc('id')->paginate(10);
+        return view('backend.products.index', compact('products'));
     }
 
 

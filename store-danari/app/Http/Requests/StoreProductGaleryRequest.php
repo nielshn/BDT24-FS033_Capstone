@@ -4,14 +4,16 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateProductRequest extends FormRequest
+class StoreProductGaleryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return $this->user()->hasAnyRole(['seller', 'admin']);
+        return $this->user()->hasAnyRole(
+            ['seller', 'admin']
+        );
     }
 
     /**
@@ -22,11 +24,9 @@ class UpdateProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'price' => 'required|numeric',
-            'category_id' => 'required|exists:categories,id',
-            'stock' => 'required|integer',
-            'description' => 'required|string',
+            'products_id' => 'required|exists:products,id',
+            'photos' => 'sometimes|array',
+            'photos.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ];
     }
 }

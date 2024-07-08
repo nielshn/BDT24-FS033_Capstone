@@ -6,6 +6,7 @@ use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\ProductGalery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
@@ -16,7 +17,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::where('users_id', Auth::id())->get();
+        $products = Product::with(['productGaleries'])->where('users_id', Auth::id())->get();
         return view('frontend.products.index', compact('products'));
     }
 
@@ -25,7 +26,6 @@ class ProductController extends Controller
         $categories = Category::all();
         return view('frontend.products.create', compact('categories'));
     }
-
     public function store(StoreProductRequest $request)
     {
         $validated = $request->validated();
@@ -40,7 +40,8 @@ class ProductController extends Controller
                     $fileName = time() . '_' . $photo->getClientOriginalName();
                     $filePath = $photo->storeAs('productGalery', $fileName, 'public');
 
-                    $product->productGaleries()->create([
+                    ProductGalery::create([
+                        'products_id' => $product->id,
                         'photos' => $filePath,
                     ]);
                 }
@@ -50,6 +51,8 @@ class ProductController extends Controller
         return redirect()->route('products.index')->with('success', 'Product created successfully.');
     }
 
+
+
     public function show(Product $product)
     {
         return view('frontend.products.show', compact('product'));
@@ -57,13 +60,14 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
+        $product->load(['productGaleries', 'user', 'category']);
         $categories = Category::all();
         return view('frontend.products.edit', compact('product', 'categories'));
     }
 
+
     public function update(UpdateProductRequest $request, Product $product)
     {
-
         DB::transaction(function () use ($request, $product) {
             $validated = $request->validated();
             $product->update($validated);
@@ -78,7 +82,8 @@ class ProductController extends Controller
                     $fileName = time() . '_' . $photo->getClientOriginalName();
                     $filePath = $photo->storeAs('productGalery', $fileName, 'public');
 
-                    $product->productGaleries()->create([
+                    ProductGalery::create([
+                        'products_id' => $product->id,
                         'photos' => $filePath,
                     ]);
                 }
@@ -87,7 +92,6 @@ class ProductController extends Controller
 
         return redirect()->route('products.index')->with('success', 'Product updated successfully.');
     }
-
     public function destroy(Product $product)
     {
         DB::beginTransaction();

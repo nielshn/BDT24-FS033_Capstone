@@ -2,12 +2,12 @@
 
 <x-app-layout>
     <div class="section-content section-dashboard-home" data-aos="fade-up">
-        <div class="container-fluid mb-4">
+        <div class="container-fluid">
             <x-slot name="header">
                 <div class="flex justify-between items-center bg-indigo-100 px-6 py-4 rounded-md shadow-md">
-                    <h2 class="text-2xl font-semibold text-indigo-900 leading-tight">Create Categories</h2>
+                    <h4 class="text-2xl font-semibold text-indigo-900 leading-tight">Create Categories</h4>
                     <a href="{{ route('admin.categories.index') }}"
-                        classac="flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md transition-colors duration-300">
+                        class="flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md transition-colors duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />

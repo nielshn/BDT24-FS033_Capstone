@@ -21,7 +21,8 @@ class Product extends Model
         'category_id',
     ];
 
-    public function seller()
+
+    public function user()
     {
         return $this->belongsTo(User::class, 'users_id');
     }
@@ -33,7 +34,7 @@ class Product extends Model
 
     public function productGaleries()
     {
-        return $this->hasMany(ProductGalery::class);
+        return $this->hasMany(ProductGalery::class, 'products_id');
     }
 
     public function cartItems()

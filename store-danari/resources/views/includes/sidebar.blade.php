@@ -10,8 +10,8 @@
         <div class="list-group list-group-flush">
             <a href="{{ route('dashboard') }}"
                 class="list-group-item list-group-item-action {{ request()->routeIs('dashboard') ? 'active' : '' }}">Dashboard</a>
-            <a href="{{ route('products.index') }}"
-                class="list-group-item list-group-item-action {{ request()->routeIs('products.index') ? 'active' : '' }}">All
+            <a href="{{ route('admin.allproducts.index') }}"
+                class="list-group-item list-group-item-action {{ request()->routeIs('admin.allproducts.index') ? 'active' : '' }}">All
                 Products</a>
             <a href="{{ route('admin.categories.index') }}"
                 class="list-group-item list-group-item-action {{ request()->is('admin/categories*') ? 'active' : '' }}">Categories</a>
