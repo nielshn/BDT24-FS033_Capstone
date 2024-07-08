@@ -105,3 +105,48 @@ Garis besar batas-batas proyek dan deskripsi tentang bagaimana tim akan memecahk
 
 4. **Ancaman (Threats)**:
    - Kompetitor lain dalam industri e-commerce dengan fungsionalitas serupa tetapi memiliki media pengiklanan yang lebih luas.
+---
+## Prerequisites
+- Ensure you have PHP 8.1 or higher installed.
+- Install Composer for dependency management.
+
+### Installation Steps
+
+1. **Clone the repository**:
+   ```sh
+   git clone https://github.com/nielshn/BDT24-FS033_Capstone.git
+   ```
+2. **Navigate to the project directory**:
+   ```sh
+   cd store-danari
+   ```
+3. **Install Depedencies**:
+   ```sh
+   composer install
+   ```
+4. **Copy the .env file**:
+   ```sh
+   cp .env.example .env
+   ```
+5. **Generate the application key**:
+   ```sh
+   php artisan key:generate
+   ```
+6. **Set up the database**:
+   - Update the .env file with your database credentials.
+   - Run the migrations and seed database:
+   ```sh
+     php artisan migrate --seed
+   ```
+7. **Activate the storage link**:
+   ```sh
+   php artisan storage:link
+   ```
+
+### Running the Application
+- Start the development server:
+  ```sh
+  php artisan serve
+  ```
+- Visit http://localhost:8000 in your web browser to access the application.
+---
