@@ -13,8 +13,8 @@ use App\Models\ProductGalery;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [FrontController::class, 'index'])->name('front.home');
-Route::get('category', [FrontController::class, 'category'])->name('front.category');
-Route::get('details', [FrontController::class, 'details'])->name('front.details');
+Route::get('category/{category:slug}', [FrontController::class, 'category'])->name('front.category');
+Route::get('details/{product:slug}', [FrontController::class, 'details'])->name('front.details');
 Route::get('cart', [FrontController::class, 'cart'])->name('front.cart');
 Route::get('success', [FrontController::class, 'success'])->name('front.success');
 Route::get('register-success', [FrontController::class, 'registerSuccess'])->name('front.registerSuccess');
@@ -44,6 +44,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('categories', CategoryController::class)->middleware('role:admin');
         Route::get('all-products', [DashboardController::class, 'allProducts'])->name('allproducts.index')->middleware('role:admin');
+        Route::get('products/{id}', [DashboardController::class, 'show'])->name('products.show');
     });
 });
 

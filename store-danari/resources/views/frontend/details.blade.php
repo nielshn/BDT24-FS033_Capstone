@@ -10,7 +10,7 @@
                         <nav>
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item">
-                                    <a href="/index.html">Home</a>
+                                    <a href="{{ route('front.home') }}">Home</a>
                                 </li>
                                 <li class="breadcrumb-item active">Product Details</li>
                             </ol>
@@ -49,34 +49,33 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-8">
-                            <h1>Sofa Ternyaman</h1>
-                            <div class="owner">By Danari</div>
-                            <div class="price">$1,489</div>
+                            <h1>{{ $product->name }}</h1>
+                            <div class="owner">{{ $product->user->name }}</div>
+                            <div class="price">${{ number_format($product->price, 2) }}</div>
                         </div>
+
                         <div class="col-lg-2" data-aos="zoom-in">
-                            <a href="{{ route('front.cart') }}" class="btn btn-success px-4 text-white btn-block mb-3">Add to Cart</a>
+                            @auth
+                                <form action="#" method="POST" enctype="multipart/form-data">
+                                    <button class="btn btn-success px-4 text-white btn-block mb-3">
+                                        Add to Cart
+                                    </button>
+                                </form>
+                            @else
+                                <a href="{{ route('login') }}" class="btn btn-success px-4 text-white btn-block mb-3">
+                                    Sign in to Add
+                                </a>
+                            @endauth
                         </div>
                     </div>
                 </div>
             </section>
+
             <section class="store-description">
                 <div class="container">
                     <div class="row">
                         <div class="col-12 col-lg-8">
-                            <p>
-                                The Nike Air Max 720 SE goes bigger than ever before with
-                                Nike's tallest Air unit yet for unimaginable, all-day comfort.
-                                There's super breathable fabrics on the upper, while colours
-                                add a modern edge.
-                            </p>
-                            <p>
-                                Bring the past into the future with the Nike Air Max 2090, a
-                                bold look inspired by the DNA of the iconic Air Max 90.
-                                Brand-new Nike Air cushioning underfoot adds unparalleled
-                                comfort while transparent mesh and vibrantly coloured details
-                                on the upper are blended with timeless OG features for an
-                                edgy, modernised look.
-                            </p>
+                            {!! $product->description !!}
                         </div>
                     </div>
                 </div>
@@ -85,41 +84,33 @@
             <section class="store-review">
                 <div class="container">
                     <div class="row">
-                        <div class="col-12 col-lg-8 mt-3 mb-3">
+                        <div class="col-12 col-lg-8 mb-3">
                             <h5>Customer Review (3)</h5>
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="col-12 col-lg-8">
                             <ul class="list-unstyled">
                                 <li class="media">
-                                    <img src="/images/icons-testimonial-1.png" alt="testimony icons"
-                                        class="mr-3 rounded-circle" />
+                                    <img src="/images/icon-testimonial-1.png" alt="" class="mr-3 rounded-circle" />
                                     <div class="media-body">
                                         <h5 class="mt-2 mb-1">Hazza Risky</h5>
-                                        I thought it was not good for living room. I really happy
-                                        to decided buy this product last week now feels like
-                                        homey.
+                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Libero eveniet aspernatur
+                                        ipsa, officia impedit!
                                     </div>
                                 </li>
                                 <li class="media">
-                                    <img src="/images/icons-testimonial-2.png" alt="testimony icons"
-                                        class="mr-3 rounded-circle" />
+                                    <img src="/images/icon-testimonial-2.png" alt="" class="mr-3 rounded-circle" />
                                     <div class="media-body">
-                                        <h5 class="mt-2 mb-1">Anna Sukkirata</h5>
-                                        Color is great with the minimalist concept. Even I thought
-                                        it was made by Cactus industry. I do really satisfied with
-                                        this.
+                                        <h5 class="mt-2 mb-1">Hazza Risky</h5>
+                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Libero eveniet aspernatur
+                                        ipsa, officia impedit!
                                     </div>
                                 </li>
                                 <li class="media">
-                                    <img src="/images/icons-testimonial-3.png" alt="testimony icons"
-                                        class="mr-3 rounded-circle" />
+                                    <img src="/images/icon-testimonial-3.png" alt="" class="mr-3 rounded-circle" />
                                     <div class="media-body">
-                                        <h5 class="mt-2 mb-1">Dakimu Wangi</h5>
-                                        When I saw at first, it was really awesome to have with.
-                                        Just let me know if there is another upcoming product like
-                                        this.
+                                        <h5 class="mt-2 mb-1">Hazza Risky</h5>
+                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Libero eveniet aspernatur
+                                        ipsa, officia impedit!
                                     </div>
                                 </li>
                             </ul>
@@ -130,6 +121,7 @@
         </div>
     </div>
 @endsection
+
 @push('addon-script')
     <script src="/vendor/vue/vue.js"></script>
     <script>
@@ -140,22 +132,13 @@
             },
             data: {
                 activePhoto: 0,
-                photos: [{
-                        id: 1,
-                        url: "/images/product-details-2.jpg",
-                    },
-                    {
-                        id: 2,
-                        url: "/images/product-details-1.jpg",
-                    },
-                    {
-                        id: 3,
-                        url: "/images/product-details-3.jpg",
-                    },
-                    {
-                        id: 4,
-                        url: "/images/product-details-4.jpg",
-                    },
+                photos: [
+                    @foreach ($product->productGaleries as $gallery)
+                        {
+                            id: {{ $gallery->id }},
+                            url: "{{ Storage::url($gallery->photos) }}",
+                        },
+                    @endforeach
                 ],
             },
             methods: {

@@ -55,7 +55,7 @@ class RegisteredUserController extends Controller
             'avatar' => $avatarPath,
         ]);
 
-        if ($request->is_store_open) {
+        if ($request->is_store_open === 'true') {
             Store::create([
                 'user_id' => $user->id,
                 'name' => $request->store_name,

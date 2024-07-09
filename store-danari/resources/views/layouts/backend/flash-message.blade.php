@@ -1,8 +1,9 @@
+<!-- Success Toast -->
 <div x-data="{ show: {{ session()->has('success') ? 'true' : 'false' }} }" x-show="show" x-transition:enter="transition ease-out duration-300"
     x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100"
     x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 transform scale-100"
     x-transition:leave-end="opacity-0 transform scale-95" @click.away="show = false"
-    class="fixed inset-0 flex items-end justify-center px-4 py-6 pointer-events-none sm:p-6 sm:items-end sm:justify-center z-50">
+    class="fixed inset-0 flex items-end justify-end px-4 py-6 pointer-events-none sm:p-6 sm:items-end sm:justify-end z-50">
     <div x-show="show" x-description="Notification panel, show/hide based on alert state."
         x-transition:enter="transition ease-out duration-300"
         x-transition:enter-start="opacity-0 transform translate-y-4 sm:translate-y-0 sm:scale-95"
@@ -30,7 +31,7 @@
                         <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
                             aria-hidden="true">
                             <path fill-rule="evenodd"
-                                d="M14.293 5.293a1 1 0 011.414 1.414l-8 8a1 1 0 01-1.414 0l-8-8a1 1 0 111.414-1.414L10 10.586l4.293-4.293z"
+                                d="M14.293 5.293a1 1 0 011.414 1.414l-8 8a1 1 0 01-1.414 0l-8-8a1 1 111.414-1.414L10 10.586l4.293-4.293z"
                                 clip-rule="evenodd" />
                         </svg>
                         <span class="sr-only">Close</span>
@@ -46,7 +47,7 @@
     x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100"
     x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 transform scale-100"
     x-transition:leave-end="opacity-0 transform scale-95" @click.away="show = false"
-    class="fixed inset-0 flex items-end justify-center px-4 py-6 pointer-events-none sm:p-6 sm:items-end sm:justify-center z-50">
+    class="fixed inset-0 flex items-end justify-end px-4 py-6 pointer-events-none sm:p-6 sm:items-end sm:justify-end z-50">
     <div x-show="show" x-description="Notification panel, show/hide based on alert state."
         x-transition:enter="transition ease-out duration-300"
         x-transition:enter-start="opacity-0 transform translate-y-4 sm:translate-y-0 sm:scale-95"
@@ -75,7 +76,7 @@
                         <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
                             aria-hidden="true">
                             <path fill-rule="evenodd"
-                                d="M14.293 5.293a1 1 0 011.414 1.414l-8 8a1 1 0 01-1.414 0l-8-8a1 1 0 111.414-1.414L10 10.586l4.293-4.293z"
+                                d="M14.293 5.293a1 1 0 011.414 1.414l-8 8a1 1 0 01-1.414 0l-8-8a1 1 111.414-1.414L10 10.586l4.293-4.293z"
                                 clip-rule="evenodd" />
                         </svg>
                         <span class="sr-only">Close</span>
@@ -85,6 +86,7 @@
         </div>
     </div>
 </div>
+
 <script>
     // Auto-dismiss success and error messages after 5 seconds
     setTimeout(function() {

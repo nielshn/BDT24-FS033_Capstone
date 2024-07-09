@@ -23,9 +23,6 @@ class CategoryController extends Controller
         if ($request->ajax()) {
             $data = Category::query()->orderByDesc('id');
             return DataTables::of($data)
-                ->addColumn('index_no', function () {
-                    return '<span></span>';
-                })
                 ->addColumn('action', function ($category) {
                     return view('backend.categories._action', compact('category'))->render();
                 })
@@ -33,6 +30,7 @@ class CategoryController extends Controller
                     return $category->icon ? '<img src="' . Storage::url($category->icon) . '" style="max-height: 40px;"/>' : '';
                 })
                 ->rawColumns(['action', 'icon', 'index_no'])
+                ->addIndexColumn()
                 ->make(true);
         }
 

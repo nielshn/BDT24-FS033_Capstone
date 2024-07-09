@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 
 class DashboardController extends Controller
@@ -37,9 +38,39 @@ class DashboardController extends Controller
             });
         }
 
-        $products = $query->orderByDesc('id')->paginate(10);
+        $products = $query->orderByDesc('id')->paginate(5);
+
+        if ($request->ajax()) {
+            $html = view('backend.products.partials._products-table', compact('products'))->render();
+
+            return response()->json([
+                'html' => $html,
+            ]);
+        }
+
         return view('backend.products.index', compact('products'));
     }
+
+    public function show($id)
+    {
+        $product = Product::with(['user', 'category', 'productGaleries'])->findOrFail($id);
+
+        if (request()->ajax()) {
+            return response()->json([
+                'name' => $product->name,
+                'description' => $product->description,
+                'price' => number_format($product->price, 2),
+                'stock' => $product->stock,
+                'category' => $product->category->name,
+                'photos' => $product->productGaleries->map(fn ($gallery) => Storage::url($gallery->photos)),
+            ]);
+        }
+
+        return view('backend.products.show', compact('product'));
+    }
+
+
+
 
 
     public function accountSettings()

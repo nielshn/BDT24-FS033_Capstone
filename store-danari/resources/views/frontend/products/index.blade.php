@@ -10,7 +10,7 @@
                 </div>
             </x-slot>
 
-            @include('layouts.backend.flash-message')
+            @include('layouts.backend.session-message')
             <div class="dashboard-content">
                 <div class="row">
                     <div class="col-12">
@@ -40,5 +40,4 @@
             </div>
         </div>
     </div>
-
 </x-app-layout>

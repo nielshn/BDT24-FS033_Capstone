@@ -1,5 +1,5 @@
 <div class="flex space-x-2">
-    <a href="javascript:void(0)" data-toggle="tooltip" data-id="{{ $category->id }}" data-original-title="View"
+    {{-- <a href="javascript:void(0)" data-toggle="tooltip" data-id="{{ $category->id }}" data-original-title="View"
         class="flex items-center px-2 py-1 bg-green-500 hover:bg-green-600 text-white rounded-md"
         onclick="showCategoryDetails({{ $category->id }})">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -8,7 +8,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5z" />
         </svg>
         <span class="ml-1">View</span>
-    </a>
+    </a> --}}
 
     <a href="{{ route('admin.categories.edit', $category) }}"
         class="flex items-center px-2 py-1 bg-yellow-400 hover:bg-yellow-500 text-white rounded-md">
