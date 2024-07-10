@@ -1,5 +1,5 @@
 @extends('layouts.frontend.main')
-@section('title', 'Product Details')
+@section('title', $product->name)
 
 @section('content')
     <div class="page-content page-details">
@@ -118,12 +118,63 @@
                     </div>
                 </div>
             </section>
+
+            <section class="store-new-products">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12" data-aos="fade-up">
+                            <h5>Related Products</h5>
+                        </div>
+                    </div>
+                    <div class="row" data-aos="fade-up" data-aos-delay="200">
+                        <div id="relatedProductsCarousel" class="carousel slide" data-ride="carousel">
+                            <div class="carousel-inner">
+                                @foreach ($relatedProducts->chunk(4) as $index => $chunk)
+                                    <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
+                                        <div class="row">
+                                            @foreach ($chunk as $relatedProduct)
+                                                <div class="col-6 col-md-3">
+                                                    <a href="{{ route('front.details', $relatedProduct->slug) }}"
+                                                        class="component-products d-block">
+                                                        <div class="products-thumbnail">
+                                                            <div class="products-image"
+                                                                style="background-image: url('{{ $relatedProduct->productGaleries->first() ? Storage::url($relatedProduct->productGaleries->first()->photos) : 'images/no-image.jpg' }}');">
+                                                            </div>
+                                                        </div>
+                                                        <div class="products-text">{{ $relatedProduct->name }}</div>
+                                                        <div class="products-price">
+                                                            ${{ number_format($relatedProduct->price) }}</div>
+                                                    </a>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                            <a class="carousel-control-prev" href="#relatedProductsCarousel" role="button"
+                                data-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                            <a class="carousel-control-next" href="#relatedProductsCarousel" role="button"
+                                data-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
     </div>
 @endsection
 
 @push('addon-script')
     <script src="/vendor/vue/vue.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
     <script>
         var gallery = new Vue({
             el: "#gallery",
@@ -148,4 +199,57 @@
             },
         });
     </script>
+@endpush
+
+@push('prepend-style')
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .main-image {
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .thumbnail-image {
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .thumbnail-image.active {
+            border: 2px solid #f8b600;
+        }
+
+        .products-thumbnail {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.1), -6px -6px 12px rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .products-thumbnail:hover {
+            transform: translateY(-5px);
+            box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.2), -10px -10px 20px rgba(255, 255, 255, 0.7);
+        }
+
+        .products-image {
+            padding-top: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .products-text,
+        .products-price {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .products-price {
+            color: #e91e63;
+            font-weight: bold;
+        }
+
+        .store-details-container {
+            padding-top: 60px;
+        }
+    </style>
 @endpush

@@ -32,7 +32,7 @@
                                     </form>
                                 </div>
 
-                                <div class="table-responsive" id="products-table">
+                                <div class="table-responsive" id="prod+ucts-table">
                                     @include('backend.products.partials._products-table')
                                 </div>
 

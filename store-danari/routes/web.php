@@ -13,15 +13,15 @@ use App\Models\ProductGalery;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [FrontController::class, 'index'])->name('front.home');
-Route::get('category/{category:slug}', [FrontController::class, 'category'])->name('front.category');
-Route::get('details/{product:slug}', [FrontController::class, 'details'])->name('front.details');
+Route::get('category/{category:slug}', [FrontController::class, 'detailCategory'])->name('front.category');
+Route::get('all-products', [FrontController::class, 'allProducts'])->name('front.products');
+Route::get('detail-products/{product:slug}', [FrontController::class, 'detailProducts'])->name('front.details');
 Route::get('cart', [FrontController::class, 'cart'])->name('front.cart');
 Route::get('success', [FrontController::class, 'success'])->name('front.success');
 Route::get('register-success', [FrontController::class, 'registerSuccess'])->name('front.registerSuccess');
 Route::get('register/check', [RegisteredUserController::class, 'check'])->name('api-register-check');
 
 
-Route::resource('transactions', TransactionController::class);
 
 Route::get('dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('account-settings', [DashboardController::class, 'accountSettings'])->name('dashboard.accountSettings');
@@ -40,6 +40,7 @@ Route::middleware('auth')->group(function () {
 
 
     Route::resource('store-settings', StoreSettingsController::class)->middleware('role:seller');
+    Route::resource('transactions', TransactionController::class);
 
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('categories', CategoryController::class)->middleware('role:admin');

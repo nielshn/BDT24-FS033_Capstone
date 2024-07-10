@@ -3,6 +3,9 @@
 
 @section('content')
     <div class="page-content page-home">
+        <input type="hidden" id="currentCategorySlug" value="">
+        <input type="hidden" id="currentProductSlug" value="">
+        <!-- Store Carousel -->
         <section class="store-carousel">
             <div class="container">
                 <div class="row">
@@ -29,6 +32,9 @@
                 </div>
             </div>
         </section>
+
+
+        <!-- Trend Categories -->
         <section class="store-trend-categories">
             <div class="container">
                 <div class="row">
@@ -58,6 +64,7 @@
             </div>
         </section>
 
+        <!-- New Products -->
         <section class="store-new-products">
             <div class="container">
                 <div class="row">
@@ -65,22 +72,8 @@
                         <h5>New Products</h5>
                     </div>
                 </div>
-                <div class="row">
-                    @forelse ($products as $product)
-                        <div class="col-6 col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="100">
-                            <a href="{{ route('front.details', $product->slug) }}" class="component-products d-block">
-                                <div class="products-thumbnail">
-                                    <div class="products-image"
-                                        style="background-image: url('{{ $product->productGaleries->first() ? Storage::url($product->productGaleries->first()->photos) : 'images/no-image.jpg' }}');">
-                                    </div>
-                                </div>
-                                <div class="products-text">{{ $product->name }}</div>
-                                <div class="products-price">${{ number_format($product->price) }}</div>
-                            </a>
-                        </div>
-                    @empty
-                        <p class="text-xl">Product belum tersedia</p>
-                    @endforelse
+                <div id="product-list" class="row">
+                    @include('frontend.partials.products', ['products' => $products])
                 </div>
             </div>
         </section>

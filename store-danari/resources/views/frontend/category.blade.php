@@ -1,34 +1,39 @@
 @extends('layouts.frontend.main')
-
-@section('title')
-    Category Page - DANARI STORE
-@endsection
+@section('title', $category->name . ' Category')
 
 @section('content')
     <div class="page-content page-home">
+        <input type="hidden" id="currentCategorySlug" value="{{ $category->slug }}">
+        <input type="hidden" id="currentProductSlug" value="">
         <section class="store-trend-categories">
             <div class="container">
                 <div class="row">
-                    <div class="col-12" data-aos="fade-up">
-                        <h5>All Categories</h5>
+                    <div class="col-12 d-flex justify-content-between align-items-center"data-aos="fade-up">
+                        <h5>Category {{ $category->name }}</h5>
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="categoryDropdown"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Select Category
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="categoryDropdown">
+                                @foreach ($categories as $category)
+                                    <a class="dropdown-item category-filter"
+                                        href="{{ route('front.category', $category->slug) }}"
+                                        data-category="{{ $category->id }}">
+                                        {{ $category->name }}
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="row">
-                    @foreach ($category->products as $product)
-                        <div class="col-6 col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="100">
-                            <a href="{{ route('front.details', $product->slug) }}" class="component-products d-block">
-                                <div class="products-thumbnail">
-                                    <div class="products-image"
-                                        style="background-image: url('{{ $product->productGaleries->first() ? Storage::url($product->productGaleries->first()->photos) : 'images/no-image.jpg' }}');">
-                                    </div>
-                                </div>
-                                <div class="products-text">{{ $product->name }}</div>
-                                <div class="products-price">${{ number_format($product->price) }}</div>
-                            </a>
-                        </div>
-                    @endforeach
+                <div class="row" id="product-list">
+                    @include('frontend.partials.products', ['products' => $products])
                 </div>
             </div>
         </section>
+        <div class="mt-4 d-flex justify-content-center">
+            {{ $products->appends(['search' => request('search')])->links('pagination::bootstrap-4') }}
+        </div>
     </div>
 @endsection
