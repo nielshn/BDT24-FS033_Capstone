@@ -11,7 +11,7 @@
                 </div>
             </div>
             <div class="products-text">{{ $product->name }}</div>
-            <div class="products-price">${{ number_format($product->price, 2) }}</div>
+            <div class="products-price">${{ number_format($product->price) }}</div>
         </a>
     </div>
 @empty
@@ -19,5 +19,5 @@
 @endforelse
 
 <div class="mt-4 d-flex justify-content-center w-100">
-    {{ $products->appends(['search' => request('search')])->links('pagination::bootstrap-4') }}
+    {{ $products->appends(['search' => request('search')])->links('pagination::bootstrap-5') }}
 </div>

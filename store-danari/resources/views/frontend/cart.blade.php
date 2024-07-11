@@ -32,58 +32,51 @@
                                     <th>Image</th>
                                     <th>Name &amp; Seller</th>
                                     <th>Price</th>
+                                    <th>Quantity</th>
                                     <th>Menu</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td style="width: 20%">
-                                        <img src="/images/product-cart-1.jpg" alt="product cart" class="cart-image" />
-                                    </td>
-                                    <td style="width: 35%">
-                                        <div class="product-title">Sofa Ternyaman</div>
-                                        <div class="product-subtitle">by Dony</div>
-                                    </td>
-                                    <td style="width: 35%">
-                                        <div class="product-title">$29,122</div>
-                                        <div class="product-subtitle">USD</div>
-                                    </td>
-                                    <td style="width: 20%">
-                                        <a href="#" class="btn btn-remove-cart">Remove</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="width: 20%">
-                                        <img src="/images/product-cart-2.jpg" alt="product cart" class="cart-image" />
-                                    </td>
-                                    <td style="width: 35%">
-                                        <div class="product-title">Sneaker</div>
-                                        <div class="product-subtitle">by Daniel</div>
-                                    </td>
-                                    <td style="width: 35%">
-                                        <div class="product-title">$80,309</div>
-                                        <div class="product-subtitle">USD</div>
-                                    </td>
-                                    <td style="width: 20%">
-                                        <a href="#" class="btn btn-remove-cart">Remove</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="width: 20%">
-                                        <img src="/images/product-cart-3.jpg" alt="product cart" class="cart-image" />
-                                    </td>
-                                    <td style="width: 35%">
-                                        <div class="product-title">Coffee Holder</div>
-                                        <div class="product-subtitle">by Rizky</div>
-                                    </td>
-                                    <td style="width: 35%">
-                                        <div class="product-title">$13,492</div>
-                                        <div class="product-subtitle">USD</div>
-                                    </td>
-                                    <td style="width: 20%">
-                                        <a href="#" class="btn btn-remove-cart">Remove</a>
-                                    </td>
-                                </tr>
+                                @foreach ($cartItems as $cart)
+                                    <tr>
+                                        <td style="width: 20%">
+                                            @if ($cart->product->productGaleries)
+                                                <img src="{{ Storage::url($cart->product->productGaleries->first()->photos) }}"
+                                                    alt="" class="cart-image" />
+                                            @endif
+                                        </td>
+                                        <td style="width: 30%">
+                                            <div class="product-title">{{ $cart->product->name }}</div>
+                                            <div class="product-subtitle">by {{ $cart->product->user->name }}</div>
+                                        </td>
+                                        <td style="width: 20%">
+                                            <div class="product-title">${{ number_format($cart->product->price) }}
+                                            </div>
+                                            <div class="product-subtitle">USD</div>
+                                        </td>
+                                        <td style="width: 14%">
+                                            <div class="input-group quantity-control">
+                                                <button class="btn btn-decrement" data-id="{{ $cart->id }}"
+                                                    type="button">-</button>
+                                                <input type="number" class="form-control text-center" name="quantity"
+                                                    value="{{ $cart->quantity }}" min="1"
+                                                    max="{{ $cart->product->stock }}" readonly>
+                                                <button class="btn btn-increment" data-id="{{ $cart->id }}"
+                                                    type="button">+</button>
+                                            </div>
+                                        </td>
+                                        <td style="width: 20%">
+                                            <form action="{{ route('cart-products.destroy', $cart->id) }}" method="POST"
+                                                class="form-remove-cart">
+                                                @method('DELETE')
+                                                @csrf
+                                                <button class="btn btn-remove-cart" type="submit">
+                                                    Remove
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -138,8 +131,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="country">Country</label>
-                            <input type="text" class="form-control" id="country" name="country"
-                                value="Indonesia" />
+                            <input type="text" class="form-control" id="country" name="country" value="Indonesia" />
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -172,15 +164,147 @@
                         <div class="product-subtitle">Ship to Jakarta</div>
                     </div>
                     <div class="col-4 col-md-2">
-                        <div class="product-title text-success">$392, 409</div>
+                        <div class="product-title text-success">${{ number_format($totalPrice) }}</div>
                         <div class="product-subtitle">Total</div>
                     </div>
                     <div class="col-8 col-md-3">
-                        <a href="{{ route('front.success') }}" class="btn btn-success mt-4 btn-block">
-                            Checkout Now</a>
+                        <form action="#" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-success mt-4 btn-block">Checkout Now</button>
+                        </form>
                     </div>
                 </div>
             </div>
         </section>
     </div>
 @endsection
+
+@push('addon-script')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // quantity cart icon (+ -)
+            document.querySelectorAll('.btn-decrement').forEach(button => {
+                button.addEventListener('click', function() {
+                    let quantityInput = this.nextElementSibling;
+                    let currentQuantity = parseInt(quantityInput.value);
+                    if (currentQuantity > 1) {
+                        updateQuantity(this.dataset.id, currentQuantity - 1, quantityInput);
+                    }
+                });
+            });
+
+            document.querySelectorAll('.btn-increment').forEach(button => {
+                button.addEventListener('click', function() {
+                    let quantityInput = this.previousElementSibling;
+                    let currentQuantity = parseInt(quantityInput.value);
+                    let maxQuantity = parseInt(quantityInput.max);
+                    if (currentQuantity < maxQuantity) {
+                        updateQuantity(this.dataset.id, currentQuantity + 1, quantityInput);
+                    }
+                });
+            });
+
+            document.querySelectorAll('.form-remove-cart').forEach(form => {
+                form.addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    removeCartItem(this);
+                });
+            });
+        });
+
+        function updateQuantity(cartItemId, newQuantity, quantityInput) {
+            fetch(`/cart-products/${cartItemId}/update-quantity`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        quantity: newQuantity
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        quantityInput.value = newQuantity;
+                        // Update total price on the page, if needed
+                        const totalPriceElement = quantityInput.closest('tr').querySelector('.product-total-price');
+                        totalPriceElement.textContent = `$${(data.newTotalPrice)}`;
+                    } else {
+                        alert('Failed to update quantity.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        function removeCartItem(form) {
+            const action = form.action;
+            fetch(action, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        form.closest('tr').remove();
+                    } else {
+                        alert('Failed to remove item from cart.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+    </script>
+@endpush
+
+@push('addon-style')
+    <style>
+        .quantity-control {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .quantity-control button {
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .quantity-control input {
+            width: 50px;
+            text-align: center;
+            border: 1px solid #ced4da;
+        }
+
+        .btn-remove-cart {
+            background-color: #e3342f;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .btn-remove-cart:hover {
+            background-color: #cc1f1a;
+        }
+
+        .product-title {
+            font-weight: bold;
+        }
+
+        .product-subtitle {
+            color: #6c757d;
+        }
+    </style>
+@endpush

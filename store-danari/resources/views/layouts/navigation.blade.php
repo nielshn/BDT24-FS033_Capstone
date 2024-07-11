@@ -120,7 +120,7 @@
                                 {{ __('Profile') }}
                             </x-dropdown-link>
                             <a href="{{ route('front.home') }}" class="dropdown-item">Home</a>
-                            <a href="/dashboard-account.html" class="dropdown-item">Settings</a>
+                            <a href="{{ route('dashboard.accountSettings') }}" class="dropdown-item">Settings</a>
                             <div class="dropdown-divider"></div>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf

@@ -6,12 +6,10 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateStoreSettingsRequest extends FormRequest
 {
-
     public function authorize(): bool
     {
         return $this->user()->hasAnyRole(['seller']);
     }
-
 
     public function rules(): array
     {

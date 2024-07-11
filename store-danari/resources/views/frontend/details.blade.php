@@ -20,7 +20,7 @@
             </div>
         </section>
 
-        <section class="store-gallery" id="gallery">
+        <section class="store-gallery mb-4" id="gallery">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8" data-aos="zoom-in">
@@ -51,15 +51,21 @@
                         <div class="col-lg-8">
                             <h1>{{ $product->name }}</h1>
                             <div class="owner">{{ $product->user->name }}</div>
-                            <div class="price">${{ number_format($product->price, 2) }}</div>
+                            <div class="owner">Stock: {{ $product->stock }}</div>
+                            <div class="price">${{ number_format($product->price) }}</div>
                         </div>
 
                         <div class="col-lg-2" data-aos="zoom-in">
                             @auth
-                                <form action="#" method="POST" enctype="multipart/form-data">
-                                    <button class="btn btn-success px-4 text-white btn-block mb-3">
-                                        Add to Cart
-                                    </button>
+                                <form action="{{ route('cart-products.store') }}" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <input type="hidden" name="products_id" value="{{ $product->id }}">
+                                    <div class="form-group">
+                                        <label for="quantity">Quantity</label>
+                                        <input type="number" class="form-control" name="quantity" id="quantity" value="1"
+                                            min="1" max="{{ $product->stock }}">
+                                </div>
+                                    <button class="btn btn-success px-4 text-white btn-block mb-3">Add to Cart</button>
                                 </form>
                             @else
                                 <a href="{{ route('login') }}" class="btn btn-success px-4 text-white btn-block mb-3">
@@ -201,7 +207,7 @@
     </script>
 @endpush
 
-@push('prepend-style')
+{{-- @push('prepend-style')
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         .main-image {
@@ -252,4 +258,4 @@
             padding-top: 60px;
         }
     </style>
-@endpush
+@endpush --}}

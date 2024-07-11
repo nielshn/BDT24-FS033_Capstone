@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FrontController;
@@ -40,6 +41,9 @@ Route::middleware('auth')->group(function () {
 
 
     Route::resource('store-settings', StoreSettingsController::class)->middleware('role:seller');
+    Route::resource('cart-products', CartController::class)->middleware('role:customer|seller')->only(['index', 'store', 'destroy']);
+    Route::patch('/cart-products/{id}/update-quantity', [CartController::class, 'updateQuantity'])->name('cart-products.updateQuantity');
+
     Route::resource('transactions', TransactionController::class);
 
     Route::prefix('admin')->name('admin.')->group(function () {

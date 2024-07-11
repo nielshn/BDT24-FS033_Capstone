@@ -59,7 +59,7 @@
                     </li>
                     <li class="nav-item">
                         <div class="nav-link d-inline-block mt-2">
-                            <a href="{{ route('front.cart') }}"> <img src="/images//icon-cart-empty.svg"
+                            <a href="{{ route('cart-products.index') }}"> <img src="/images//icon-cart-empty.svg"
                                     alt="icon cart empty" /></a>
                         </div>
                     </li>
@@ -69,7 +69,7 @@
                         <a href="{{ route('dashboard') }}" class="nav-link"> Hi, {{ Auth::user()->name }}</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('front.cart') }}" class="nav-link d-inline-block">Cart</a>
+                        <a href="{{ route('cart-products.index') }}" class="nav-link d-inline-block">Cart</a>
                     </li>
                 </ul>
             @endauth

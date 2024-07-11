@@ -30,7 +30,7 @@ class StoreSettingsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateStoreSettingsRequest $request)
+    public function update(UpdateStoreSettingsRequest $request, $id)
     {
         $user = Auth::user();
         $store = $user->store;
@@ -40,7 +40,7 @@ class StoreSettingsController extends Controller
             $store->update([
                 'name' => $validated['store_name'],
                 'categories_id' => $validated['categories_id'],
-                'status' => $validated['is_store_open'] ? 1 : 0,
+                'status' => $validated['is_store_open'],
             ]);
         });
 
