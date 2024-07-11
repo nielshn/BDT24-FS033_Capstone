@@ -89,98 +89,144 @@
                         <h2 class="mb-4">Shipping Details</h2>
                     </div>
                 </div>
-                <div class="row mb-2" data-aos="fade-up" data-aos-delay="200">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="country">Address 1</label>
-                            <input type="text" class="form-control" id="addressOne" name="addressOne"
-                                value="Setra Duta Cemara" />
+                <form action="#" id="locations" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="row mb-2" data-aos="fade-up" data-aos-delay="200">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="country">Address 1</label>
+                                <input type="text" class="form-control" id="address_one" name="address_one"
+                                    value="Setra Duta Cemara" />
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="adressTwo">Address 2</label>
-                            <input type="text" class="form-control" id="adressTwo" name="adressTwo"
-                                value="Blok B2 No. 34" />
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="address_two">Address 2</label>
+                                <input type="text" class="form-control" id="address_two" name="address_two"
+                                    value="Blok B2 No. 34" />
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="province">Province</label>
-                            <select name="province" id="province" class="form-control">
-                                <option value="West Java">West Java</option>
-                            </select>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="provinces_id">Province</label>
+                                <select name="provinces_id" id="provinces_id" class="form-control" v-if="provinces"
+                                    v-model="provinces_id">
+                                    <option v-for="province in provinces" :value="province.id">@{{ province.name }}
+                                    </option>
+                                </select>
+                                <select v-else class="from-control" id=""></select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="city">City</label>
-                            <select name="city" id="city" class="form-control">
-                                <option value="Bandung">Bandung</option>
-                            </select>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="regencies_id">City</label>
+                                <select name="regencies_id" id="regencies_id" class="form-control" v-if="regencies"
+                                    v-model="regencies_id">
+                                    <option v-for="regency in regencies" :value="regency.id">@{{ regency.name }}
+                                    </option>
+                                </select>
+                                <select v-else class="from-control" id=""></select>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="postalCode">Postal Code</label>
-                            <input type="text" class="form-control" id="postalCode" name="postalCode"
-                                value="Setra Duta Cemara" />
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="zip_code">Postal Code</label>
+                                <input type="text" class="form-control" id="zip_code" name="zip_code"
+                                    value="Setra Duta Cemara" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="country">Country</label>
+                                <input type="text" class="form-control" id="country" name="country"
+                                    value="Indonesia" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="phone_number">Mobile</label>
+                                <input type="text" class="form-control" id="phone_number" name="phone_number"
+                                    value="+ 628 2020 111111" />
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="country">Country</label>
-                            <input type="text" class="form-control" id="country" name="country" value="Indonesia" />
+                    <div class="row" data-aos="fade-up" data-aos-delay="150">
+                        <div class="col-12">
+                            <hr />
+                        </div>
+                        <div class="col-12">
+                            <h2 class="mb-2">Payment Information</h2>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="mobile">Mobile</label>
-                            <input type="text" class="form-control" id="mobile" name="mobile"
-                                value="+ 628 2020 111111" />
+                    <div class="row" data-aos="fade-up" data-aos-delay="200">
+                        <div class="col-4 col-md-2">
+                            <div class="product-title">$10</div>
+                            <div class="product-subtitle">Country Tax</div>
                         </div>
-                    </div>
-                </div>
-                <div class="row" data-aos="fade-up" data-aos-delay="150">
-                    <div class="col-12">
-                        <hr />
-                    </div>
-                    <div class="col-12">
-                        <h2 class="mb-2">Payment Information</h2>
-                    </div>
-                </div>
-                <div class="row" data-aos="fade-up" data-aos-delay="200">
-                    <div class="col-4 col-md-2">
-                        <div class="product-title">$10</div>
-                        <div class="product-subtitle">Country Tax</div>
-                    </div>
-                    <div class="col-4 col-md-3">
-                        <div class="product-title">$280</div>
-                        <div class="product-subtitle">Product Insurance</div>
-                    </div>
-                    <div class="col-4 col-md-2">
-                        <div class="product-title">$580</div>
-                        <div class="product-subtitle">Ship to Jakarta</div>
-                    </div>
-                    <div class="col-4 col-md-2">
-                        <div class="product-title text-success">${{ number_format($totalPrice) }}</div>
-                        <div class="product-subtitle">Total</div>
-                    </div>
-                    <div class="col-8 col-md-3">
-                        <form action="#" method="POST">
-                            @csrf
+                        <div class="col-4 col-md-3">
+                            <div class="product-title">$280</div>
+                            <div class="product-subtitle">Product Insurance</div>
+                        </div>
+                        <div class="col-4 col-md-2">
+                            <div class="product-title">$580</div>
+                            <div class="product-subtitle">Ship to Jakarta</div>
+                        </div>
+                        <div class="col-4 col-md-2">
+                            <div class="product-title text-success">${{ number_format($totalPrice) }}</div>
+                            <div class="product-subtitle">Total</div>
+                        </div>
+                        <div class="col-8 col-md-3">
                             <button type="submit" class="btn btn-success mt-4 btn-block">Checkout Now</button>
-                        </form>
+                        </div>
                     </div>
-                </div>
+                </form>
             </div>
         </section>
     </div>
 @endsection
 
 @push('addon-script')
+    <script src="/vendor/vue/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
+        var locations = new Vue({
+            el: "#locations",
+            mounted() {
+                AOS.init();
+                this.getProvincesData();
+            },
+            data: {
+                provinces: null,
+                regencies: null,
+                provinces_id: null,
+                regencies_id: null
+            },
+            methods: {
+                getProvincesData() {
+                    var self = this;
+                    axios.get('{{ route('api-provinces') }}')
+                        .then(function(response) {
+                            self.provinces = response.data;
+                        })
+                },
+                getRegenciesData() {
+                    var self = this;
+                    axios.get('{{ url('regencies') }}/' + self.provinces_id)
+                        .then(function(response) {
+                            self.regencies = response.data;
+                        })
+                },
+            },
+            watch: {
+                provinces_id: function(val, oldVal) {
+                    this.regencies_id = null;
+                    this.getRegenciesData();
+                },
+            }
+        });
+
+
         document.addEventListener('DOMContentLoaded', function() {
             // quantity cart icon (+ -)
             document.querySelectorAll('.btn-decrement').forEach(button => {

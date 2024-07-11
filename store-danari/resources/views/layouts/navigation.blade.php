@@ -80,7 +80,7 @@
                 @else
                     <ul class="navbar-nav d-none d-lg-flex mr-2">
                         <li class="nav-item">
-                            <a href="{{ route('front.cart') }}" class="nav-link d-inline-block mt-2 relative">
+                            <a href="{{ route('cart-products.index') }}" class="nav-link d-inline-block mt-2 relative">
                                 <img src="/images/icon-cart-filled.svg" alt="icon cart filled" class="h-6 w-6" />
                                 <span
                                     class="card-badge absolute top-0 right-0 bg-red-500 text-white rounded-full px-2 py-1 text-xs">3</span>
@@ -156,7 +156,7 @@
                         </x-responsive-nav-link>
                     </form>
                 @else
-                    <x-responsive-nav-link :href="route('front.cart')">
+                    <x-responsive-nav-link :href="route('cart-products.index')">
                         {{ __('Cart') }}
                     </x-responsive-nav-link>
 

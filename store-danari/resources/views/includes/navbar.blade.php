@@ -51,17 +51,24 @@
                                 @csrf
                                 <x-dropdown-link :href="route('logout')"
                                     onclick="event.preventDefault();
-                                                    this.closest('form').submit();">
+                                                this.closest('form').submit();">
                                     {{ __('Log Out') }}
                                 </x-dropdown-link>
                             </form>
                         </div>
                     </li>
                     <li class="nav-item">
-                        <div class="nav-link d-inline-block mt-2">
-                            <a href="{{ route('cart-products.index') }}"> <img src="/images//icon-cart-empty.svg"
-                                    alt="icon cart empty" /></a>
-                        </div>
+                        <a href="{{ route('cart-products.index') }}" class="nav-link d-inline-block mt-2">
+                            @php
+                                $carts = \App\Models\Cart::where('users_id', Auth::user()->id)->count();
+                            @endphp
+                            @if ($carts > 0)
+                                <img src="/images/icon-cart-filled.svg" alt="icon cart filled" />
+                                <div class="card-badge">{{ $carts }}</div>
+                            @else
+                                <img src="/images/icon-cart-empty.svg" alt="icon cart empty" />
+                            @endif
+                        </a>
                     </li>
                 </ul>
                 <ul class="navbar-nav d-block d-lg-none">
@@ -69,7 +76,14 @@
                         <a href="{{ route('dashboard') }}" class="nav-link"> Hi, {{ Auth::user()->name }}</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('cart-products.index') }}" class="nav-link d-inline-block">Cart</a>
+                        <a href="{{ route('cart-products.index') }}" class="nav-link d-inline-block">
+                            @php
+                                $carts = \App\Models\Cart::where('users_id', Auth::user()->id)->count();
+                            @endphp
+                            Cart @if ($carts > 0)
+                                ({{ $carts }})
+                            @endif
+                        </a>
                     </li>
                 </ul>
             @endauth

@@ -5,23 +5,23 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FrontController;
+use App\Http\Controllers\LocationController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductGaleryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StoreSettingsController;
 use App\Http\Controllers\TransactionController;
-use App\Models\ProductGalery;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [FrontController::class, 'index'])->name('front.home');
 Route::get('category/{category:slug}', [FrontController::class, 'detailCategory'])->name('front.category');
 Route::get('all-products', [FrontController::class, 'allProducts'])->name('front.products');
 Route::get('detail-products/{product:slug}', [FrontController::class, 'detailProducts'])->name('front.details');
-Route::get('cart', [FrontController::class, 'cart'])->name('front.cart');
 Route::get('success', [FrontController::class, 'success'])->name('front.success');
 Route::get('register-success', [FrontController::class, 'registerSuccess'])->name('front.registerSuccess');
 Route::get('register/check', [RegisteredUserController::class, 'check'])->name('api-register-check');
-
+Route::get('provinces', [LocationController::class, 'provinces'])->name('api-provinces');
+Route::get('regencies/{provinces_id}', [LocationController::class, 'regencies'])->name('api-regencies');
 
 
 Route::get('dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
