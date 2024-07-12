@@ -34,7 +34,7 @@
                     {{ __('Dashboard') }}
                 </x-nav-link>
                 @role('admin')
-                    <x-nav-link :href="route('admin.allproducts.index')" :active="request()->routeIs('admin.allproducts.index')">
+                    <x-nav-link :href="route('admin.allproducts.index')" :active="request()->is('admin/products*')">
                         {{ __('All Products') }}
                     </x-nav-link>
                     <x-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.index')">

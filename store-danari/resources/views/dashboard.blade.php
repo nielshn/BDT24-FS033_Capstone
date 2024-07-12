@@ -3,13 +3,13 @@
     <div class="section-content section-dashboard-home" data-aos="fade-up">
         <div class="container-fluid">
             <x-slot name="header">
-                <div class="items-center bg-indigo-100 px-4 py-3 rounded-md shadow-md">
-                    <h2 class="text-2xl font-semibold text-indigo-900 leading-tight">
+                <div class="items-center bg-gradient-to-r from-indigo-200 to-purple-300 px-4 py-2 rounded-md shadow-md">
+                    <h2 class="text-2xl font-semibold text-indigo-900 leading-tight mb-2">
                         {{ Auth::user()->hasRole('admin') ? __('Admin Dashboard') : __('Dashboard') }}</h2>
                     @role('admin')
-                        <p class="text-1xl font-semibold">Look what you have made today!</p>
+                        <p class="text-md font-semibold">Look what you have made today!</p>
                     @else
-                        <p class="text-1xl font-semibold">Welcome to Dashboard</p>
+                        <p class="text-md font-semibold">Welcome to Dashboard</p>
                     @endrole
                 </div>
             </x-slot>

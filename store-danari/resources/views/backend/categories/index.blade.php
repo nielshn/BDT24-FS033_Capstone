@@ -4,7 +4,7 @@
         <div class="container-fluid mb-4">
             @include('layouts.backend.session-message')
             <x-slot name="header">
-                <div class="flex justify-between items-center bg-indigo-100 px-4 py-3 rounded-md shadow-md">
+                <div class="flex justify-between items-centerbg-gradient-to-r from-indigo-200 to-purple-300 px-4 py-2 rounded-md shadow-md">
                     <h2 class="text-2xl font-semibold text-indigo-900 leading-tight">Manage Categories</h2>
                     <a href="{{ route('admin.categories.create') }}"
                         class="flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md transition-colors duration-300">
@@ -35,7 +35,7 @@
                                 </a>
                                 <div class="table-responsive mt-4">
                                     <table class="table table-hover scroll-horizontal-vertical w-100" id="crudTable">
-                                        <thead>
+                                        <thead class="bg-gradient-to-r from-indigo-200 to-purple-300 text-indigo-900">
                                             <tr>
                                                 <th>No</th>
                                                 <th>Name</th>
@@ -57,7 +57,7 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="categoryDetailModal" tabindex="-1" aria-labelledby="categoryDetailModalLabel"
+    {{-- <div class="modal fade" id="categoryDetailModal" tabindex="-1" aria-labelledby="categoryDetailModalLabel"
         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -78,7 +78,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     @push('addon-script')
         <script>
@@ -120,24 +120,6 @@
                         width: '%',
                     },
                 ]
-            });
-
-            // Function to show category details in modal
-            function showCategoryDetails(id, name, slug, icon) {
-                $('#category-id').text(id);
-                $('#category-name').text(name);
-                $('#category-slug').text(slug);
-                $('#category-icon').attr('src', icon ? '/storage/' + icon : '');
-                $('#categoryDetailModal').modal('show');
-            }
-
-            // Event delegation for dynamically created elements
-            $(document).on('click', '.view-category-btn', function() {
-                var id = $(this).data('id');
-                var name = $(this).data('name');
-                var slug = $(this).data('slug');
-                var icon = $(this).data('icon');
-                showCategoryDetails(id, name, slug, icon);
             });
         </script>
     @endpush

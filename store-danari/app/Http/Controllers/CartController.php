@@ -14,13 +14,15 @@ class CartController extends Controller
 {
     public function index()
     {
-        $cartItems = Cart::with(['product', 'product.user'])->where('users_id', Auth::id())->get();
+        $user = Auth::user(); // Fetch the user object instead of just the ID
+        $cartItems = Cart::with(['product', 'product.user'])->where('users_id', $user->id)->get();
         $totalPrice = $cartItems->sum(function ($cartItem) {
             return $cartItem->product->price * $cartItem->quantity;
         });
 
-        return view('frontend.cart', compact('cartItems', 'totalPrice'));
+        return view('frontend.cart', compact('cartItems', 'totalPrice', 'user'));
     }
+
 
     public function store(StoreAddToCartRequest $request)
     {
@@ -81,26 +83,26 @@ class CartController extends Controller
     }
 
 
-    public function checkout(Request $request)
-    {
-        $user = Auth::user();
-        $cartItems = Cart::with('product')->where('users_id', $user->id)->get();
+    // public function checkout(Request $request)
+    // {
+    //     $user = Auth::user();
+    //     $cartItems = Cart::with('product')->where('users_id', $user->id)->get();
 
-        DB::transaction(function () use ($cartItems) {
-            foreach ($cartItems as $cartItem) {
-                $product = $cartItem->product;
-                if ($product->stock < $cartItem->quantity) {
-                    throw new \Exception('Product stock is insufficient.');
-                }
+    //     DB::transaction(function () use ($cartItems) {
+    //         foreach ($cartItems as $cartItem) {
+    //             $product = $cartItem->product;
+    //             if ($product->stock < $cartItem->quantity) {
+    //                 throw new \Exception('Product stock is insufficient.');
+    //             }
 
-                $product->stock -= $cartItem->quantity;
-                $product->save();
+    //             $product->stock -= $cartItem->quantity;
+    //             $product->save();
 
-                $cartItem->delete();
-            }
-        });
+    //             $cartItem->delete();
+    //         }
+    //     });
 
-        Session::flash('success', 'Checkout successful.');
-        return redirect()->route('cart-products.index');
-    }
+    //     Session::flash('success', 'Checkout successful.');
+    //     return redirect()->route('cart-products.index');
+    // }
 }

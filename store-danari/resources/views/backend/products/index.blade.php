@@ -4,9 +4,9 @@
     <div class="section-content section-dashboard-home" data-aos="fade-up">
         <div class="container-fluid">
             <x-slot name="header">
-                <div class="items-center bg-indigo-100 px-6 py-4 rounded-md shadow-md">
-                    <h2 class="text-2xl font-semibold text-indigo-900 leading-tight mb-2">All Products</h2>
-                    <p class="text-0xl">Manage it well and get money</p>
+                <div class="items-center bg-gradient-to-r from-indigo-200 to-purple-300 px-4 py-2 rounded-md shadow-md">
+                    <h2 class="text-2xl font-semibold  text-indigo-900 leading-tight mb-2">All Products</h2>
+                    <p class="text-md">Manage it well and get money</p>
                 </div>
             </x-slot>
 
@@ -32,7 +32,7 @@
                                     </form>
                                 </div>
 
-                                <div class="table-responsive" id="prod+ucts-table">
+                                <div class="table-responsive" id="products-table">
                                     @include('backend.products.partials._products-table')
                                 </div>
 
@@ -45,135 +45,7 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Product Detail Modal -->
-            <div class="modal fade" id="productDetailModal" tabindex="-1" role="dialog"
-                aria-labelledby="productDetailModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="productDetailModalLabel">Product Details</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="three-dimension-container">
-                                        <img id="productDetailImage" src="" alt="Product Image"
-                                            class="img-fluid three-dimension">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <h5 id="productDetailName"></h5>
-                                    <p id="productDetailDescription"></p>
-                                    <p><strong>Price:</strong> $<span id="productDetailPrice"></span></p>
-                                    <p><strong>Stock:</strong> <span id="productDetailStock"></span></p>
-                                    <div id="productDetailCategory"></div>
-                                    <div id="productDetailPhotos" class="mt-3"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
-
-    @push('addon-script')
-        <script>
-            function showProductDetailModal(product) {
-                document.getElementById('productDetailName').textContent = product.name;
-                document.getElementById('productDetailDescription').textContent = product.description;
-                document.getElementById('productDetailPrice').textContent = product.price;
-                document.getElementById('productDetailStock').textContent = product.stock;
-                document.getElementById('productDetailCategory').textContent = 'Category: ' + product.category.name;
-
-                const photoContainer = document.getElementById('productDetailPhotos');
-                photoContainer.innerHTML = '';
-                product.photos.forEach(photo => {
-                    const img = document.createElement('img');
-                    img.src = photo.url;
-                    img.classList.add('img-fluid', 'thumbnail');
-                    photoContainer.appendChild(img);
-                });
-
-                $('#productDetailModal').modal('show');
-            }
-
-            document.querySelectorAll('.view-product-detail').forEach(button => {
-                button.addEventListener('click', function() {
-                    const productId = this.getAttribute('data-id');
-                    fetch(`{{ route('admin.products.show', '') }}/${productId}`, {
-                            headers: {
-                                'X-Requested-With': 'XMLHttpRequest'
-                            }
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            showProductDetailModal(data);
-                        });
-                });
-            });
-
-            document.getElementById('search-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const searchQuery = e.target.search.value;
-
-                fetch(`{{ route('admin.allproducts.index') }}?search=${searchQuery}`, {
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        document.getElementById('products-table').innerHTML = data.html;
-                        attachViewDetailEvents();
-                    });
-            });
-
-            function attachViewDetailEvents() {
-                document.querySelectorAll('.view-product-detail').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const productId = this.getAttribute('data-id');
-                        fetch(`{{ route('admin.products.show', '') }}/${productId}`, {
-                                headers: {
-                                    'X-Requested-With': 'XMLHttpRequest'
-                                }
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                showProductDetailModal(data);
-                            });
-                    });
-                });
-            }
-
-            document.querySelectorAll('.delete-form').forEach(form => {
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    Swal.fire({
-                        title: 'Are you sure?',
-                        text: 'You will not be able to recover this product!',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#d33',
-                        cancelButtonColor: '#3085d6',
-                        confirmButtonText: 'Yes, delete it!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            form.submit();
-                        }
-                    });
-                });
-            });
-
-            // Initial attachment of view detail events
-            attachViewDetailEvents();
-        </script>
-    @endpush
+    @include('backend.products.partials._script')
 </x-app-layout>

@@ -11,6 +11,7 @@
         "laravel/framework": "^11.9",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
+        "midtrans/midtrans-php": "^2.5",
         "sentry/sentry-laravel": "^4.6",
         "spatie/laravel-permission": "^6.9",
         "yajra/laravel-datatables-oracle": "11.0"

@@ -3,9 +3,9 @@
     <div class="section-content section-dashboard-home" data-aos="fade-up">
         <div class="container-fluid">
             <x-slot name="header">
-                <div class="items-center bg-indigo-100 px-6 py-4 rounded-md shadow-md">
-                    <h2 class="text-2xl font-semibold text-indigo-900 leading-tight mb-2">Transactions</h2>
-                    <p class="text-0xl"> Big result start from the small one</p>
+                <div class="items-center bg-indigo-100 px-4 py-2 rounded-md shadow-md">
+                    <h2 class="text-xl font-semibold text-indigo-900 leading-tight mb-2">Transactions</h2>
+                    <p class="text-md"> Big result start from the small one</p>
                 </div>
             </x-slot>
             <div class="dashboard-content">
@@ -123,10 +123,10 @@
             </div>
         </div>
     </div>
-    @push('addon-style')
+    {{-- @push('addon-style')
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
             integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
-    @endpush
+    @endpush --}}
 
     @push('addon-script')
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"

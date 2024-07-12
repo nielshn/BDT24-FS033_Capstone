@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 
+
 class DashboardController extends Controller
 {
     public function index()
@@ -23,7 +24,7 @@ class DashboardController extends Controller
     public function allProducts(Request $request)
     {
         $search = $request->input('search');
-        $query = Product::with(['user', 'productGaleries', 'category']);
+        $query = Product::with(['user', 'category', 'productGaleries']);
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -51,27 +52,37 @@ class DashboardController extends Controller
         return view('backend.products.index', compact('products'));
     }
 
-    public function show($id)
-    {
-        $product = Product::with(['user', 'category', 'productGaleries'])->findOrFail($id);
 
-        if (request()->ajax()) {
-            return response()->json([
-                'name' => $product->name,
-                'description' => $product->description,
-                'price' => number_format($product->price, 2),
-                'stock' => $product->stock,
-                'category' => $product->category->name,
-                'photos' => $product->productGaleries->map(fn ($gallery) => Storage::url($gallery->photos)),
-            ]);
-        }
+    public function showProduct(Product $product)
+    {
+        $product->load(['user', 'category', 'productGaleries']);
 
         return view('backend.products.show', compact('product'));
     }
 
+    public function allUsers(Request $request)
+    {
+        if ($request->ajax()) {
+            $query = User::with('roles')->select('users.*')->orderByDesc('id');
 
+            return DataTables::of($query)
+                ->addIndexColumn()
+                ->addColumn('role', function ($user) {
+                    $roles = $user->roles->pluck('name')->map(function ($role) {
+                        return "<strong>{$role}</strong>";
+                    })->join(', ');
+                    return $roles;
+                })
+                // Uncomment this if you have action buttons
+                // ->addColumn('action', function ($user) {
+                //     return view('backend.users.partials._action', compact('user'))->render();
+                // })
+                ->rawColumns(['role'])
+                ->make(true);
+        }
 
-
+        return view('backend.users.index');
+    }
 
     public function accountSettings()
     {

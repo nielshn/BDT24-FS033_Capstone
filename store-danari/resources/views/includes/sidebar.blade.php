@@ -11,13 +11,13 @@
             <a href="{{ route('dashboard') }}"
                 class="list-group-item list-group-item-action {{ request()->routeIs('dashboard') ? 'active' : '' }}">Dashboard</a>
             <a href="{{ route('admin.allproducts.index') }}"
-                class="list-group-item list-group-item-action {{ request()->routeIs('admin.allproducts.index') ? 'active' : '' }}">All
+                class="list-group-item list-group-item-action {{ request()->is('admin/products*') ? 'active' : '' }}">All
                 Products</a>
             <a href="{{ route('admin.categories.index') }}"
                 class="list-group-item list-group-item-action {{ request()->is('admin/categories*') ? 'active' : '' }}">Categories</a>
             <a href="{{ route('transactions.index') }}"
                 class="list-group-item list-group-item-action {{ request()->routeIs('transactions.index') ? 'active' : '' }}">Transactions</a>
-            <a href="#" class="list-group-item list-group-item-action">Users</a>
+            <a href="{{ route('admin.users.index') }}" class="list-group-item list-group-item-action {{ request()->routeIs('admin.users.index') ? 'active' : '' }}">Users</a>
             <form method="POST" action="{{ route('logout') }}" class="list-group-item list-group-item-action">
                 @csrf
                 <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();">

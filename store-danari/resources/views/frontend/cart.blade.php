@@ -89,21 +89,22 @@
                         <h2 class="mb-4">Shipping Details</h2>
                     </div>
                 </div>
-                <form action="#" id="locations" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('checkout') }}" id="locations" method="POST" enctype="multipart/form-data">
                     @csrf
+                    <input type="hidden" name="total_price" value="{{ $totalPrice }}">
                     <div class="row mb-2" data-aos="fade-up" data-aos-delay="200">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="country">Address 1</label>
+                                <label for="address_one">Address 1</label>
                                 <input type="text" class="form-control" id="address_one" name="address_one"
-                                    value="Setra Duta Cemara" />
+                                    value="{{ $user->address->address_one ?? '' }}" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="address_two">Address 2</label>
                                 <input type="text" class="form-control" id="address_two" name="address_two"
-                                    value="Blok B2 No. 34" />
+                                    value="{{ $user->address->address_two ?? '' }}" />
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -128,26 +129,25 @@
                                 <select v-else class="from-control" id=""></select>
                             </div>
                         </div>
-
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="zip_code">Postal Code</label>
                                 <input type="text" class="form-control" id="zip_code" name="zip_code"
-                                    value="Setra Duta Cemara" />
+                                    value="{{ $user->address->zip_code ?? '' }}" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="country">Country</label>
                                 <input type="text" class="form-control" id="country" name="country"
-                                    value="Indonesia" />
+                                    value="{{ $user->address->country ?? '' }}" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="phone_number">Mobile</label>
                                 <input type="text" class="form-control" id="phone_number" name="phone_number"
-                                    value="+ 628 2020 111111" />
+                                    value="{{ $user->phone_number }}" />
                             </div>
                         </div>
                     </div>
@@ -180,7 +180,7 @@
                             <button type="submit" class="btn btn-success mt-4 btn-block">Checkout Now</button>
                         </div>
                     </div>
-                </form>
+
             </div>
         </section>
     </div>
@@ -225,7 +225,6 @@
                 },
             }
         });
-
 
         document.addEventListener('DOMContentLoaded', function() {
             // quantity cart icon (+ -)
@@ -273,9 +272,11 @@
                 .then(data => {
                     if (data.success) {
                         quantityInput.value = newQuantity;
-                        // Update total price on the page, if needed
                         const totalPriceElement = quantityInput.closest('tr').querySelector('.product-total-price');
-                        totalPriceElement.textContent = `$${(data.newTotalPrice)}`;
+                        totalPriceElement.textContent = `$${data.newTotalPrice.toFixed(2)}`;
+
+                        const totalCartPriceElement = document.getElementById('totalCartPrice');
+                        totalCartPriceElement.textContent = `$${data.totalCartPrice.toFixed(2)}`;
                     } else {
                         alert('Failed to update quantity.');
                     }
@@ -297,8 +298,10 @@
                 .then(data => {
                     if (data.success) {
                         form.closest('tr').remove();
+                        const totalCartPriceElement = document.getElementById('totalCartPrice');
+                        totalCartPriceElement.textContent = `$${data.totalCartPrice.toFixed(2)}`;
                     } else {
-                        alert('Failed to remove item from cart.');
+                        alert('Failed to remove cart item.');
                     }
                 })
                 .catch(error => {
