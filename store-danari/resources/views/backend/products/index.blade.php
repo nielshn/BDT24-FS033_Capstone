@@ -3,14 +3,14 @@
 <x-app-layout>
     <div class="section-content section-dashboard-home" data-aos="fade-up">
         <div class="container-fluid">
-            <x-slot name="header">
+            {{-- <x-slot name="header"> --}}
                 <div class="items-center bg-gradient-to-r from-indigo-200 to-purple-300 px-4 py-2 rounded-md shadow-md">
                     <h2 class="text-2xl font-semibold  text-indigo-900 leading-tight mb-2">All Products</h2>
                     <p class="text-md">Manage it well and get money</p>
                 </div>
-            </x-slot>
+            {{-- </x-slot> --}}
 
-            <div class="dashboard-content">
+            <div class="dashboard-content mt-4">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card">

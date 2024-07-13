@@ -82,7 +82,10 @@ class CartController extends Controller
         return response()->json(['success' => true]);
     }
 
-
+    public function checkoutSuccess()
+    {
+        return view('frontend.checkout-success');
+    }
     // public function checkout(Request $request)
     // {
     //     $user = Auth::user();

@@ -9,6 +9,7 @@ use App\Models\Address;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Midtrans\Config;
 use Midtrans\Snap;
 
 class CheckoutController extends Controller
@@ -54,14 +55,13 @@ class CheckoutController extends Controller
             ]);
         }
 
+        Cart::where('users_id', $user->id)->delete();
+
         // Configuration Midtrans
-        \Midtrans\Config::$serverKey = config('services.midtrans.server_key');
-        // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
-        \Midtrans\Config::$isProduction = config('services.midtrans.is_production');
-        // Set sanitization on (default)
-        \Midtrans\Config::$isSanitized = config('services.midtrans.is_sanitized');
-        // Set 3DS transaction for credit card to true
-        \Midtrans\Config::$is3ds = config('services.midtrans.is3ds');
+        Config::$serverKey = config('services.midtrans.server_key');
+        Config::$isProduction = config('services.midtrans.is_production');
+        Config::$isSanitized = config('services.midtrans.is_sanitized');
+        Config::$is3ds = config('services.midtrans.is3ds');
 
         $midtrans = [
             'transaction_details' => [

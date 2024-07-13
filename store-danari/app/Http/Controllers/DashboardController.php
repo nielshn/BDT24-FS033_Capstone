@@ -3,23 +3,70 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateAddressRequest;
-use App\Http\Requests\UpdateStoreSettingsRequest;
-use App\Models\Category;
-use App\Models\Product;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\TransactionDetail;
+use App\Models\Transaction;
+use App\Models\User;
+use App\Models\Product;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
-
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        return view('dashboard');
+        $user = Auth::user();
+        $role = $user->getRoleNames()->first();
+        $transactions = [];
+        $revenue = 0;
+        $customerCount = 0;
+        $recentTransactions = [];
+
+        if ($role === 'admin') {
+            // For admin role
+            $transactions = TransactionDetail::with(['transaction.user', 'product.productGaleries'])
+                ->orderByDesc('id');
+
+            $revenue = TransactionDetail::sum('price');
+
+            $customerCount = User::role(['customer', 'seller'])->count();
+
+            $recentTransactions = $transactions->paginate(5);
+        } elseif ($role === 'seller') {
+            // For seller role
+            $products = Product::where('users_id', $user->id)->pluck('id');
+
+            $transactions = TransactionDetail::with(['transaction.user', 'product.productGaleries'])
+                ->whereIn('products_id', $products)
+                ->orderByDesc('id');
+
+            $revenue = TransactionDetail::whereIn('products_id', $products)
+                ->sum('price');
+
+            $customerCount = User::whereHas('transactions.details.product', function ($query) {
+                $query->where('users_id', Auth::id());
+            })->count();
+
+            $recentTransactions = $transactions->paginate(5);
+        } elseif ($role === 'customer') {
+            // For customer role
+            $transactions = TransactionDetail::with(['transaction.user', 'product.productGaleries'])
+                ->whereHas('transaction', function ($query) use ($user) {
+                    $query->where('users_id', $user->id);
+                })
+                ->orderByDesc('id');
+
+
+            $revenue = $transactions->sum('price');
+
+            $customerCount = $transactions->count();
+            $recentTransactions = $transactions->paginate(5);
+        }
+
+        return view('dashboard', compact('transactions', 'revenue', 'customerCount', 'recentTransactions'));
     }
+
 
     public function allProducts(Request $request)
     {

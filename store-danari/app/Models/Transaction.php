@@ -18,4 +18,14 @@ class Transaction extends Model
         'transaction_status',
         'code'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'users_id');
+    }
+
+    public function details()
+    {
+        return $this->hasMany(TransactionDetail::class, 'transactions_id');
+    }
 }

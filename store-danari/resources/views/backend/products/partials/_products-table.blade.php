@@ -1,10 +1,10 @@
 <table class="table table-hover scroll-horizontal-vertical w-100" id="crudTable">
-    <thead class="bg-gradient-to-r from-indigo-200 to-purple-300 text-indigo-900">">
+    <thead class="bg-gradient-to-r from-indigo-200 to-purple-300 text-indigo-900">
         <tr>
             <th>No</th>
-            <th>Product Name</th>
-            <th>Price</th>
-            <th>Category</th>
+            <th>Name</th>
+            {{-- <th>Price</th> --}}
+            {{-- <th>Category</th> --}}
             <th>Seller</th>
             <th>Actions</th>
         </tr>
@@ -15,8 +15,8 @@
                 <td> {{ ($products->currentPage() - 1) * $products->perPage() + $index + 1 }}
                 </td>
                 <td>{{ $product->name }}</td>
-                <td>{{ number_format($product->price, 2) }}</td>
-                <td>{{ $product->category->name }}</td>
+                {{-- <td>{{ number_format($product->price, 2) }}</td> --}}
+                {{-- <td>{{ $product->category->name }}</td> --}}
                 <td>{{ $product->user->name }}</td>
                 <td>
                     <a href="{{ route('admin.allproducts.show', $product) }}"

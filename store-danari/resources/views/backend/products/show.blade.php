@@ -3,14 +3,11 @@
 <x-app-layout>
     <div class="section-content section-dashboard-home" data-aos="fade-up">
         <div class="container-fluid">
-            <x-slot name="header">
-                <div class="items-center bg-indigo-100 px-4 py-2 rounded-md shadow-md">
-                    <h2 class="text-xl font-semibold text-indigo-900 leading-tight mb-2">Product Details</h2>
-                    <p class="text-md">Explore the details of your selected product</p>
-                </div>
-            </x-slot>
-
-            <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+            <div class="items-center bg-gradient-to-r from-indigo-200 to-purple-300 px-4 py-2 rounded-md shadow-md">
+                <h2 class="text-2xl font-semibold text-indigo-900 leading-tight mb-2">Product Details</h2>
+                <p class="text-md">Explore the details of your selected product</p>
+            </div>
+            <div class="bg-white shadow-lg rounded-lg overflow-hidden mt-4">
                 <div class="flex flex-col lg:flex-row">
                     <div class="lg:w-1/2 mt-4 ml-4">
                         <div id="product-carousel" class="carousel slide relative mb-4" data-ride="carousel">

@@ -40,10 +40,10 @@
                     <x-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.index')">
                         {{ __('Categories') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('transactions.index')" :active="request()->routeIs('transactions.index')">
+                    <x-nav-link :href="route('transactions.index')" :active="request()->is('transactions*')">
                         {{ __('Transactions') }}
                     </x-nav-link>
-                    <x-nav-link href="#">
+                    <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')">
                         {{ __('All Users') }}
                     </x-nav-link>
                 @endrole
@@ -51,7 +51,7 @@
                     <x-nav-link :href="route('products.index')" :active="request()->routeIs('products.index')">
                         {{ __('My Products') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('transactions.index')" :active="request()->routeIs('transactions.index')">
+                    <x-nav-link :href="route('transactions.index')" :active="request()->is('transactions*')">
                         {{ __('Transactions') }}
                     </x-nav-link>
                     <x-nav-link :href="route('store-settings.index')" :active="request()->routeIs('store-settings.index')">
@@ -65,7 +65,7 @@
                     <x-nav-link href="#">
                         {{ __('My Orders') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('transactions.index')" :active="request()->routeIs('transactions.index')">
+                    <x-nav-link :href="route('transactions.index')" :active="request()->is('transactions*')">
                         {{ __('Transactions') }}
                     </x-nav-link>
                     <x-nav-link :href="route('dashboard.accountSettings')" :active="request()->routeIs('dashboard.accountSettings')">
@@ -81,9 +81,17 @@
                     <ul class="navbar-nav d-none d-lg-flex mr-2">
                         <li class="nav-item">
                             <a href="{{ route('cart-products.index') }}" class="nav-link d-inline-block mt-2 relative">
-                                <img src="/images/icon-cart-filled.svg" alt="icon cart filled" class="h-6 w-6" />
-                                <span
-                                    class="card-badge absolute top-0 right-0 bg-red-500 text-white rounded-full px-2 py-1 text-xs">3</span>
+                                @php
+                                    $carts = \App\Models\Cart::where('users_id', Auth::user()->id)->count();
+                                @endphp
+                                @if ($carts > 0)
+                                    <img src="/images/icon-cart-filled.svg" alt="icon cart filled" class="h-6 w-6" />
+                                    <span
+                                        class="absolute top-0 right-0 bg-green-600 text-white rounded-full px-2 py-1 text-xs">
+                                        {{ $carts }}</span>
+                                @else
+                                    <img src="/images/icon-cart-empty.svg" alt="icon cart empty" />
+                                @endif
                             </a>
                         </li>
                     </ul>

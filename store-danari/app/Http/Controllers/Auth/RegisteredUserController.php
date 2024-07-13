@@ -16,28 +16,21 @@ use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
 {
-    /**
-     * Display the registration view.
-     */
+
     public function create(): View
     {
         $categories = Category::orderByDesc('id')->get();
         return view('auth.register', compact('categories'));
     }
 
-    /**
-     * Handle an incoming registration request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'avatar' => ['required', 'image', 'mimes:png,jpg,jpeg'],
-            'is_store_open' => ['required', 'boolean'],
+            'is_store_open' => ['required'],
             'store_name' => ['nullable', 'required_if:is_store_open,true', 'string', 'max:255'],
             'categories_id' => ['nullable', 'required_if:is_store_open,true', 'integer', 'exists:categories,id'],
         ]);
@@ -60,8 +53,9 @@ class RegisteredUserController extends Controller
                 'user_id' => $user->id,
                 'name' => $request->store_name,
                 'categories_id' => $request->categories_id,
-                'status' => 1,
+                'status' => true
             ]);
+
             $user->assignRole('seller');
         } else {
             $user->assignRole('customer');
@@ -71,11 +65,17 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('dashboard');
+        return redirect(route('dashboard', absolute: false));
     }
 
     public function check(Request $request)
     {
         return  User::where('email', $request->email)->count() > 0 ? 'Unvailable' : 'Available';
+    }
+
+    // Register Success VIew
+    public function registerSuccess()
+    {
+        return view('auth.register-success');
     }
 }

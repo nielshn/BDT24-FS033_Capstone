@@ -16,11 +16,9 @@ class Product extends Model
         'stock',
         'description',
         'price',
-        'stock',
         'users_id',
         'category_id',
     ];
-
 
     public function user()
     {
@@ -44,6 +42,6 @@ class Product extends Model
 
     public function transactionDetails()
     {
-        return $this->hasMany(TransactionDetail::class);
+        return $this->hasMany(TransactionDetail::class, 'products_id');
     }
 }

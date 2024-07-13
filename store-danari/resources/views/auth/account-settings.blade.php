@@ -3,83 +3,77 @@
 <x-app-layout>
     <div class="section-content section-dashboard-home" data-aos="fade-up">
         <div class="container-fluid">
-            <x-slot name="header">
-                <div class="items-center bg-indigo-100 px-6 py-4 rounded-md shadow-md">
-                    <h2 class="text-2xl font-semibold text-indigo-900 leading-tight mb-2">Account Settings</h2>
-                    <p class="text-0xl">Update your current profile</p>
-                </div>
-            </x-slot>
-            <div class="dashboard-content">
+            <div class="items-center bg-gradient-to-r from-indigo-200 to-purple-300 px-4 py-2 rounded-md shadow-md">
+                <h2 class="text-2xl font-semibold text-indigo-900 leading-tight mb-2">Account Settings</h2>
+                <p class="text-md">Update your current profile</p>
+            </div>
+            <div class="dashboard-content mt-4">
                 <div class="row">
                     <div class="col-12">
-                        <form action="">
+                        <form action="" id="locations" method="POST" enctype="multipart/form-data">
+                            @csrf
                             <div class="card">
                                 <div class="card-body">
-                                    <div class="row">
+                                    <div class="row mb-2" data-aos="fade-up" data-aos-delay="200">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="country">Your Name</label>
-                                                <input type="text" class="form-control" id="name" name="name"
-                                                    value="Papel La Casa" />
+                                                <label for="address_one">Address 1</label>
+                                                <input type="text" class="form-control" id="address_one"
+                                                    name="address_one"
+                                                    value="{{ $user->address->address_one ?? '' }}" />
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="country">Your Email</label>
-                                                <input type="text" class="form-control" id="email" name="email"
-                                                    value="email@example.com" />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="country">Address 1</label>
-                                                <input type="text" class="form-control" id="addressOne"
-                                                    name="addressOne" value="Setra Duta Cemara" />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="adressTwo">Address 2</label>
-                                                <input type="text" class="form-control" id="adressTwo"
-                                                    name="adressTwo" value="Blok B2 No. 34" />
+                                                <label for="address_two">Address 2</label>
+                                                <input type="text" class="form-control" id="address_two"
+                                                    name="address_two"
+                                                    value="{{ $user->address->address_two ?? '' }}" />
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label for="province">Province</label>
-                                                <select name="province" id="province" class="form-control">
-                                                    <option value="West Java">West Java</option>
+                                                <label for="provinces_id">Province</label>
+                                                <select name="provinces_id" id="provinces_id" class="form-control"
+                                                    v-if="provinces" v-model="provinces_id">
+                                                    <option v-for="province in provinces" :value="province.id">
+                                                        @{{ province.name }}
+                                                    </option>
                                                 </select>
+                                                <select v-else class="from-control" id=""></select>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label for="city">City</label>
-                                                <select name="city" id="city" class="form-control">
-                                                    <option value="Bandung">Bandung</option>
+                                                <label for="regencies_id">City</label>
+                                                <select name="regencies_id" id="regencies_id" class="form-control"
+                                                    v-if="regencies" v-model="regencies_id">
+                                                    <option v-for="regency in regencies" :value="regency.id">
+                                                        @{{ regency.name }}
+                                                    </option>
                                                 </select>
+                                                <select v-else class="from-control" id=""></select>
                                             </div>
                                         </div>
-
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label for="postalCode">Postal Code</label>
-                                                <input type="text" class="form-control" id="postalCode"
-                                                    name="postalCode" value="Setra Duta Cemara" />
+                                                <label for="zip_code">Postal Code</label>
+                                                <input type="text" class="form-control" id="zip_code"
+                                                    name="zip_code" value="{{ $user->address->zip_code ?? '' }}" />
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="country">Country</label>
                                                 <input type="text" class="form-control" id="country" name="country"
-                                                    value="Indonesia" />
+                                                    value="{{ $user->address->country ?? '' }}" />
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="mobile">Mobile</label>
-                                                <input type="text" class="form-control" id="mobile" name="mobile"
-                                                    value="+ 628 2020 111111" />
+                                                <label for="phone_number">Mobile</label>
+                                                <input type="text" class="form-control" id="phone_number"
+                                                    name="phone_number" value="{{ $user->phone_number }}" />
                                             </div>
                                         </div>
                                     </div>
@@ -98,4 +92,45 @@
             </div>
         </div>
     </div>
+    @push('addon-script')
+        <script src="/vendor/vue/vue.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script>
+            var locations = new Vue({
+                el: "#locations",
+                mounted() {
+                    AOS.init();
+                    this.getProvincesData();
+                },
+                data: {
+                    provinces: null,
+                    regencies: null,
+                    provinces_id: null,
+                    regencies_id: null
+                },
+                methods: {
+                    getProvincesData() {
+                        var self = this;
+                        axios.get('{{ route('api-provinces') }}')
+                            .then(function(response) {
+                                self.provinces = response.data;
+                            })
+                    },
+                    getRegenciesData() {
+                        var self = this;
+                        axios.get('{{ url('regencies') }}/' + self.provinces_id)
+                            .then(function(response) {
+                                self.regencies = response.data;
+                            })
+                    },
+                },
+                watch: {
+                    provinces_id: function(val, oldVal) {
+                        this.regencies_id = null;
+                        this.getRegenciesData();
+                    },
+                }
+            });
+        </script>
+    @endpush
 </x-app-layout>

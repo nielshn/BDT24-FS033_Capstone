@@ -180,7 +180,7 @@
                             <button type="submit" class="btn btn-success mt-4 btn-block">Checkout Now</button>
                         </div>
                     </div>
-
+                </form>
             </div>
         </section>
     </div>

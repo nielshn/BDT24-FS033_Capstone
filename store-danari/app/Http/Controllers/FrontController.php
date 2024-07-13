@@ -93,20 +93,4 @@ class FrontController extends Controller
             ->get();
         return view('frontend.details', compact('product', 'relatedProducts'));
     }
-
-
-    public function cart()
-    {
-        return view('frontend.cart');
-    }
-
-    public function success()
-    {
-        return view('frontend.success');
-    }
-
-    public function registerSuccess()
-    {
-        return view('auth.register-success');
-    }
 }

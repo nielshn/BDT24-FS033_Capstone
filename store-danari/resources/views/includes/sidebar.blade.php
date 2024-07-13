@@ -16,8 +16,9 @@
             <a href="{{ route('admin.categories.index') }}"
                 class="list-group-item list-group-item-action {{ request()->is('admin/categories*') ? 'active' : '' }}">Categories</a>
             <a href="{{ route('transactions.index') }}"
-                class="list-group-item list-group-item-action {{ request()->routeIs('transactions.index') ? 'active' : '' }}">Transactions</a>
-            <a href="{{ route('admin.users.index') }}" class="list-group-item list-group-item-action {{ request()->routeIs('admin.users.index') ? 'active' : '' }}">Users</a>
+                class="list-group-item list-group-item-action {{ request()->is('transactions*') ? 'active' : '' }}">Transactions</a>
+            <a href="{{ route('admin.users.index') }}"
+                class="list-group-item list-group-item-action {{ request()->routeIs('admin.users.index') ? 'active' : '' }}">All Users</a>
             <form method="POST" action="{{ route('logout') }}" class="list-group-item list-group-item-action">
                 @csrf
                 <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();">
@@ -34,7 +35,7 @@
                 class="list-group-item list-group-item-action {{ request()->is('products*') ? 'active' : '' }}">My
                 Products</a>
             <a href="{{ route('transactions.index') }}"
-                class="list-group-item list-group-item-action {{ request()->routeIs('transactions.index') ? 'active' : '' }}">Transactions
+                class="list-group-item list-group-item-action {{ request()->is('transactions*') ? 'active' : '' }}">Transactions
             </a>
             <a href="{{ route('store-settings.index') }}"
                 class="list-group-item list-group-item-action {{ request()->routeIs('store-settings.index') ? 'active' : '' }}">Store
@@ -59,7 +60,7 @@
                 class="list-group-item list-group-item-action {{ request()->is('dashboard-orders*') ? 'active' : '' }}">My
                 Orders</a>
             <a href="{{ route('transactions.index') }}"
-                class="list-group-item list-group-item-action {{ request()->routeIs('transactions.index') ? 'active' : '' }}">Transactions</a>
+                class="list-group-item list-group-item-action {{ request()->is('transactions*') ? 'active' : '' }}">Transactions</a>
             <a href="{{ route('dashboard.accountSettings') }}"
                 class="list-group-item list-group-item-action {{ request()->routeIs('dashboard.accountSettings') ? 'active' : '' }}">My
                 Account</a>

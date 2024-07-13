@@ -3,32 +3,30 @@
 <x-app-layout>
     <div class="section-content section-dashboard-home" data-aos="fade-up">
         <div class="container-fluid">
-            <x-slot name="header">
-                <div class="items-center bg-indigo-100 px-6 py-4 rounded-md shadow-md">
-                    <h2 class="text-2xl font-semibold text-indigo-900 leading-tight mb-2">#STORE0839</h2>
-                    <p class="text-0xl"> Big result start from the small one</p>
-                </div>
-            </x-slot>
-            <div class="dashboard-content" id="transactionDetails">
+            <div class="items-center bg-gradient-to-r from-indigo-200 to-purple-300 px-4 py-2 rounded-md shadow-md">
+                <h2 class="text-2xl font-semibold text-indigo-900 leading-tight mb-2">#{{ $transaction->code }}</h2>
+                <p class="text-0xl"> Big result start from the small one</p>
+            </div>
+            <div class="dashboard-content mt-4" id="transactionDetails">
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-12 col-md-4">
-                                        <img src="images/product-details-dashboard.png" alt="product-details-dashboard"
-                                            class="w-100 mb-3" />
+                                        <img src="{{ Storage::url($transaction->details->first()->product->productGaleries->first()->photos ?? '') }}"
+                                            alt="product-details-dashboard" class="w-100 mb-3" />
                                     </div>
                                     <div class="col-12 col-md-8">
                                         <div class="row">
                                             <div class="col-12 col-md-6">
                                                 <div class="product-title">Customer Name</div>
-                                                <div class="product-subtitle">Angga Risky</div>
+                                                <div class="product-subtitle">{{ $transaction->user->name }}</div>
                                             </div>
                                             <div class="col-12 col-md-6">
                                                 <div class="product-title">Product Name</div>
                                                 <div class="product-subtitle">
-                                                    Shirup Marzzan
+                                                    {{ $transaction->details->first()->product->name }}
                                                 </div>
                                             </div>
                                             <div class="col-12 col-md-6">
@@ -36,23 +34,24 @@
                                                     Date of Transaction
                                                 </div>
                                                 <div class="product-subtitle">
-                                                    12 Januari, 2020
+                                                    {{ $transaction->created_at->format('d M, Y') }}
                                                 </div>
                                             </div>
                                             <div class="col-12 col-md-6">
                                                 <div class="product-title">Payment Status</div>
                                                 <div class="product-subtitle text-danger">
-                                                    Pending
+                                                    {{ $transaction->transaction_status }}
                                                 </div>
                                             </div>
                                             <div class="col-12 col-md-6">
                                                 <div class="product-title">Total Amount</div>
-                                                <div class="product-subtitle">$280,409</div>
+                                                <div class="product-subtitle">
+                                                    ${{ number_format($transaction->total_price) }}</div>
                                             </div>
                                             <div class="col-12 col-md-6">
                                                 <div class="product-title">Mobile</div>
                                                 <div class="product-subtitle">
-                                                    +628 2020 11111
+                                                    {{ $transaction->user->phone_number }}
                                                 </div>
                                             </div>
                                         </div>
@@ -94,35 +93,61 @@
                                             </div>
                                             <div class="col-12 col-md-3">
                                                 <div class="product-title">Shipping Status</div>
-                                                <select name="status" id="status" class="form-control"
-                                                    v-model="status">
-                                                    <option value="PENDING">Pending</option>
-                                                    <option value="SHIPPING">Shipping</option>
-                                                    <option value="SUCCESS">Success</option>
-                                                </select>
+                                                @role('seller')
+                                                    <select name="status" id="status" class="form-control"
+                                                        v-model="status">
+                                                        <option value="PENDING">Pending</option>
+                                                        <option value="SHIPPING">Shipping</option>
+                                                        <option value="SUCCESS">Success</option>
+                                                    </select>
+                                                @else
+                                                    <select name="status" id="status" class="form-control" disabled>
+                                                        <option value="PENDING"
+                                                            {{ $transaction->shipping_status == 'PENDING' ? 'selected' : '' }}>
+                                                            Pending</option>
+                                                        <option value="SHIPPING"
+                                                            {{ $transaction->shipping_status == 'SHIPPING' ? 'selected' : '' }}>
+                                                            Shipping</option>
+                                                        <option value="SUCCESS"
+                                                            {{ $transaction->shipping_status == 'SUCCESS' ? 'selected' : '' }}>
+                                                            Success</option>
+                                                    </select>
+                                                @endrole
                                             </div>
-                                            <template v-if="status == 'SHIPPING'">
-                                                <div class="col-md-3">
-                                                    <div class="product-title">Input Resi</div>
-                                                    <input type="text" class="form-control" name="resi"
-                                                        v-model="resi" />
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <button type="submit" class="btn btn-success btn-block mt-4">
-                                                        Update Resi
-                                                    </button>
-                                                </div>
-                                            </template>
+                                            @role('seller')
+                                                <template v-if="status == 'SHIPPING'">
+                                                    <div class="col-md-3">
+                                                        <div class="product-title">Input Resi</div>
+                                                        <input type="text" class="form-control" name="resi"
+                                                            v-model="resi" />
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <button type="submit" class="btn btn-success btn-block mt-4">
+                                                            Update Resi
+                                                        </button>
+                                                    </div>
+                                                </template>
+                                            @else
+                                                <template v-if="status == 'SHIPPING'">
+                                                    <div class="col-md-3 disabled">
+                                                        <div class="product-title">Input Resi</div>
+                                                        <input type="text" class="form-control" name="resi"
+                                                            v-model="resi" disabled />
+                                                    </div>
+                                                </template>
+                                            @endrole
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row mt-4">
-                                    <div class="col-12 text-right">
-                                        <button type="submit" class="btn btn-success btn-lg">
-                                            Save Now
-                                        </button>
+                                @role('seller')
+                                    <div class="row mt-4">
+                                        <div class="col-12 text-right">
+                                            <button type="submit" class="btn btn-success btn-lg">
+                                                Save Now
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
+                                @endrole
                             </div>
                         </div>
                     </div>
@@ -131,16 +156,13 @@
         </div>
     </div>
     @push('addon-script')
-        {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-    </script> --}}
         <script src="/vendor/vue/vue.js"></script>
         <script>
             var transactionDetails = new Vue({
                 el: "#transactionDetails",
                 data: {
-                    status: "SHIPPING",
-                    resi: "JNE20839149021029301231",
+                    status: "{{ $transaction->shipping_status }}",
+                    resi: "{{ $transaction->resi ?? '' }}",
                 },
                 created: function() {
                     this.getTransactions();
@@ -160,10 +182,4 @@
             });
         </script>
     @endpush
-
 </x-app-layout>
-
-{{-- @push('addon-style')
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
-@endpush --}}

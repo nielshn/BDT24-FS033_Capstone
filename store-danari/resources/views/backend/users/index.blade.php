@@ -4,13 +4,12 @@
     <div class="section-content section-dashboard-home" data-aos="fade-up">
         <div class="container-fluid mb-4">
             @include('layouts.backend.session-message')
-            <x-slot name="header">
-                <div
-                    class="flex justify-between items-center bg-gradient-to-r from-indigo-200 to-purple-300 px-4 py-3 rounded-md shadow-md">
-                    <h2 class="text-3xl font-semibold text-indigo-900 leading-tight">Manage Users</h2>
-                </div>
-            </x-slot>
-            <div class="dashboard-content">
+            <div
+                class="flex justify-between items-center bg-gradient-to-r from-indigo-200 to-purple-300 px-4 py-3 rounded-md shadow-md">
+                <h2 class="text-2xl font-semibold text-indigo-900 leading-tight">All Data Users</h2>
+            </div>
+
+            <div class="dashboard-content mt-4">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card shadow-2xl rounded-lg border-0 bg-white bg-opacity-90">

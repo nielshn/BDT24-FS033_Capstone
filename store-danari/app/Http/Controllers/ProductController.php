@@ -15,42 +15,30 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with(['productGaleries'])->where('users_id', Auth::id())->get();
+        $search = $request->input('search');
+        $query = Product::with(['productGaleries'])
+            ->where('users_id', Auth::id())
+            ->orderByDesc('id');
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                    ->orWhereHas('category', function ($q) use ($search) {
+                        $q->where('name', 'like', '%' . $search . '%');
+                    });
+            });
+        }
+
+        $products = $query->paginate(12);
+
+        if ($request->ajax()) {
+            return view('frontend.products.partials.products-list', compact('products'))->render();
+        }
+
         return view('frontend.products.index', compact('products'));
     }
-
-    public function create()
-    {
-        $categories = Category::all();
-        return view('frontend.products.create', compact('categories'));
-    }
-    public function store(StoreProductRequest $request)
-    {
-        $validated = $request->validated();
-        $validated['slug'] = Str::slug($validated['name']);
-        $validated['users_id'] = Auth::id();
-
-        DB::transaction(function () use ($validated, $request) {
-            $product = Product::create($validated);
-
-            if ($request->hasFile('photos')) {
-                foreach ($request->file('photos') as $photo) {
-                    $fileName = time() . '_' . $photo->getClientOriginalName();
-                    $filePath = $photo->storeAs('productGalery', $fileName, 'public');
-
-                    ProductGalery::create([
-                        'products_id' => $product->id,
-                        'photos' => $filePath,
-                    ]);
-                }
-            }
-        });
-
-        return redirect()->route('products.index')->with('success', 'Product created successfully.');
-    }
-
 
 
     public function show(Product $product)
