@@ -130,23 +130,4 @@ class DashboardController extends Controller
 
         return view('backend.users.index');
     }
-
-    public function accountSettings()
-    {
-        $user = Auth::user();
-        $address = $user->address;
-        return view('auth.account-settings', compact('user', 'address'));
-    }
-
-    public function accountSettingsUpdate(UpdateAddressRequest $request)
-    {
-        $user = Auth::user();
-        $address = $user->address;
-
-        DB::transaction(function () use ($address, $request) {
-            $validated = $request->validated();
-            $address->update($validated);
-        });
-        return redirect()->route('account.settings', compact('user', 'address'))->with(['success' => 'Account settings updated successfully.']);
-    }
 }

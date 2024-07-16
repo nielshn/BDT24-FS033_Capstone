@@ -32,8 +32,5 @@
                 </div>
             </div>
         </section>
-        <div class="mt-4 d-flex justify-content-center">
-            {{ $products->appends(['search' => request('search')])->links('pagination::bootstrap-4') }}
-        </div>
     </div>
 @endsection

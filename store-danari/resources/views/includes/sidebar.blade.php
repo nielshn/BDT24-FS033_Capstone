@@ -40,8 +40,8 @@
             <a href="{{ route('store-settings.index') }}"
                 class="list-group-item list-group-item-action {{ request()->routeIs('store-settings.index') ? 'active' : '' }}">Store
                 Settings</a>
-            <a href="{{ route('dashboard.accountSettings') }}"
-                class="list-group-item list-group-item-action {{ request()->routeIs('dashboard.accountSettings') ? 'active' : '' }}">My
+            <a href="{{ route('account-settings.index') }}"
+                class="list-group-item list-group-item-action {{ request()->routeIs('account-settings.index') ? 'active' : '' }}">My
                 Account</a>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
@@ -61,8 +61,8 @@
                 Orders</a>
             <a href="{{ route('transactions.index') }}"
                 class="list-group-item list-group-item-action {{ request()->is('transactions*') ? 'active' : '' }}">Transactions</a>
-            <a href="{{ route('dashboard.accountSettings') }}"
-                class="list-group-item list-group-item-action {{ request()->routeIs('dashboard.accountSettings') ? 'active' : '' }}">My
+            <a href="{{ route('account-settings.index') }}"
+                class="list-group-item list-group-item-action {{ request()->routeIs('account-settings.index') ? 'active' : '' }}">My
                 Account</a>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf

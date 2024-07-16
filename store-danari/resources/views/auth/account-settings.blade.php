@@ -10,7 +10,8 @@
             <div class="dashboard-content mt-4">
                 <div class="row">
                     <div class="col-12">
-                        <form action="" id="locations" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('account-settings.store') }}" id="locations" method="POST"
+                            enctype="multipart/form-data">
                             @csrf
                             <div class="card">
                                 <div class="card-body">
@@ -35,24 +36,26 @@
                                             <div class="form-group">
                                                 <label for="provinces_id">Province</label>
                                                 <select name="provinces_id" id="provinces_id" class="form-control"
-                                                    v-if="provinces" v-model="provinces_id">
-                                                    <option v-for="province in provinces" :value="province.id">
+                                                    v-model="provinces_id" @change="getRegenciesData" required>
+                                                    <option value="" selected disabled>Select Province</option>
+                                                    <option v-for="province in provinces" :value="province.id"
+                                                        :selected="province.id == {{ $user->address->provinces_id ?? 'null' }}">
                                                         @{{ province.name }}
                                                     </option>
                                                 </select>
-                                                <select v-else class="from-control" id=""></select>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="regencies_id">City</label>
                                                 <select name="regencies_id" id="regencies_id" class="form-control"
-                                                    v-if="regencies" v-model="regencies_id">
-                                                    <option v-for="regency in regencies" :value="regency.id">
+                                                    v-model="regencies_id" required>
+                                                    <option value="" selected disabled>Select City</option>
+                                                    <option v-for="regency in regencies" :value="regency.id"
+                                                        :selected="regency.id == {{ $user->address->regencies_id ?? 'null' }}">
                                                         @{{ regency.name }}
                                                     </option>
                                                 </select>
-                                                <select v-else class="from-control" id=""></select>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
@@ -72,8 +75,10 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="phone_number">Mobile</label>
-                                                <input type="text" class="form-control" id="phone_number"
-                                                    name="phone_number" value="{{ $user->phone_number }}" />
+                                                <input type="number" class="form-control" id="phone_number"
+                                                    name="phone_number" value="{{ $user->phone_number }}"
+                                                    oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 15);"
+                                                    onkeydown="return event.keyCode !== 189 && event.keyCode !== 109" />
                                             </div>
                                         </div>
                                     </div>
@@ -101,6 +106,8 @@
                 mounted() {
                     AOS.init();
                     this.getProvincesData();
+                    this.provinces_id = "{{ $user->address->provinces_id ?? '' }}";
+                    this.regencies_id = "{{ $user->address->regencies_id ?? '' }}";
                 },
                 data: {
                     provinces: null,
@@ -114,6 +121,9 @@
                         axios.get('{{ route('api-provinces') }}')
                             .then(function(response) {
                                 self.provinces = response.data;
+                                if (self.provinces_id) {
+                                    self.getRegenciesData();
+                                }
                             })
                     },
                     getRegenciesData() {

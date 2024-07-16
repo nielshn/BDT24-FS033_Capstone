@@ -25,7 +25,7 @@ class FrontController extends Controller
             });
         }
 
-        $products = $query->paginate(4);
+        $products = $query->paginate(12);
 
         if ($request->ajax()) {
             return view('frontend.partials.products', compact('products'))->render();
@@ -72,7 +72,7 @@ class FrontController extends Controller
         }
 
 
-        $products = $query->paginate(4);
+        $products = $query->paginate(12);
 
         if ($request->ajax()) {
             return view('frontend.partials.products', compact('products'))->render();

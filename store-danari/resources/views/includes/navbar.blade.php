@@ -45,7 +45,7 @@
                         </a>
                         <div class="dropdown-menu">
                             <a href="{{ route('dashboard') }}" class="dropdown-item">Dashboard</a>
-                            <a href="{{ route('dashboard.accountSettings') }}" class="dropdown-item">Settings</a>
+                            <a href="{{ route('account-settings.index') }}" class="dropdown-item">Settings</a>
                             <div class="dropdown-divider"></div>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf

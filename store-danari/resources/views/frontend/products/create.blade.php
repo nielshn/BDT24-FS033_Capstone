@@ -48,7 +48,7 @@
                                                 id="price" placeholder="Price" value="{{ old('price') }}" />
                                             <x-input-error :messages="$errors->get('price')" class="mt-2" />
                                         </div>
-                                        <div class="form-group">
+                                        {{-- <div class="form-group">
                                             <label for="category"
                                                 class="block text-sm font-medium text-gray-700">Category</label>
                                             <select name="category_id" id="category"
@@ -58,6 +58,22 @@
                                                     <option value="{{ $category->id }}"
                                                         {{ old('category_id') == $category->id ? 'selected' : '' }}>
                                                         {{ $category->name }}</option>
+                                                @endforeach
+                                            </select>
+                                            <x-input-error :messages="$errors->get('category_id')" class="mt-2" />
+                                        </div> --}}
+
+                                        <div class="form-group">
+                                            <label for="category"
+                                                class="block text-sm font-medium text-gray-700">Category</label>
+                                            <select name="category_id" id="category"
+                                                class="form-control mt-1 block w-full">
+                                                <option value="" disabled>Select Category</option>
+                                                @foreach ($storeCategories as $category)
+                                                    <option value="{{ $category->id }}"
+                                                        {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                                        {{ $category->name }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                             <x-input-error :messages="$errors->get('category_id')" class="mt-2" />

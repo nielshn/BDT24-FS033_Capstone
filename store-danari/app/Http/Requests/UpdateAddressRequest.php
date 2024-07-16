@@ -28,6 +28,7 @@ class UpdateAddressRequest extends FormRequest
             'regencies_id' => 'required|integer',
             'zip_code' => 'required|integer',
             'country' => 'required|string',
+            'phone_number' => 'required|string|regex:/^\+?[0-9]{10,15}$/',
         ];
     }
 }

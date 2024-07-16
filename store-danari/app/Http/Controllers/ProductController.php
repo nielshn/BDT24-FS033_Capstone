@@ -40,6 +40,48 @@ class ProductController extends Controller
         return view('frontend.products.index', compact('products'));
     }
 
+    // public function create()
+    // {
+    //     $categories = Category::all();
+    //     return view('frontend.products.create', compact('categories'));
+    // }
+    public function create()
+    {
+        // Ambil ID toko penjual saat ini
+        $storeId = auth()->user()->store->id;
+
+        // Ambil kategori yang terhubung dengan toko penjual
+        $storeCategories = Category::whereHas('stores', function ($query) use ($storeId) {
+            $query->where('id', $storeId);
+        })->get();
+
+        return view('frontend.products.create', compact('storeCategories'));
+    }
+
+    public function store(StoreProductRequest $request)
+    {
+        $validated = $request->validated();
+        $validated['slug'] = Str::slug($validated['name']);
+        $validated['users_id'] = Auth::id();
+
+        DB::transaction(function () use ($validated, $request) {
+            $product = Product::create($validated);
+
+            if ($request->hasFile('photos')) {
+                foreach ($request->file('photos') as $photo) {
+                    $fileName = time() . '_' . $photo->getClientOriginalName();
+                    $filePath = $photo->storeAs('productGalery', $fileName, 'public');
+
+                    ProductGalery::create([
+                        'products_id' => $product->id,
+                        'photos' => $filePath,
+                    ]);
+                }
+            }
+        });
+
+        return redirect()->route('products.index')->with('success', 'Product created successfully.');
+    }
 
     public function show(Product $product)
     {

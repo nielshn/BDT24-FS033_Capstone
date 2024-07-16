@@ -4,6 +4,27 @@
 @endsection
 
 @section('content')
+    @if (session('error'))
+        <div class="notification-card error" id="pricing-error-message">
+            <div>
+                <span class="icon">⚠️</span>
+                <span>{{ session('error') }}</span>
+            </div>
+            <button class="close-btn" onclick="closeMessage('pricing-error-message')">&times;</button>
+        </div>
+    @endif
+
+    @if (isset($snapToken))
+        <div class="notification-card info" id="midtrans-payment-card">
+            <div>
+                <span class="icon">💳</span>
+                <span>Proceed to Payment</span>
+            </div>
+            <button class="close-btn" onclick="closeMessage('midtrans-payment-card')">&times;</button>
+        </div>
+    @endif
+
+
     <div class="page-content page-cart">
         <section class="store-breadcrumbs" data-aos="fade-down" data-aos-delay="100">
             <div class="container">
@@ -29,6 +50,7 @@
                         <table class="table table-borderless table-cart">
                             <thead>
                                 <tr>
+                                    <th><input type="checkbox" id="select-all"></th>
                                     <th>Image</th>
                                     <th>Name &amp; Seller</th>
                                     <th>Price</th>
@@ -39,10 +61,15 @@
                             <tbody>
                                 @foreach ($cartItems as $cart)
                                     <tr>
+                                        <td>
+                                            <input type="checkbox" class="product-checkbox" data-id="{{ $cart->id }}"
+                                                data-price="{{ $cart->product->price }}"
+                                                data-quantity="{{ $cart->quantity }}">
+                                        </td>
                                         <td style="width: 20%">
                                             @if ($cart->product->productGaleries)
                                                 <img src="{{ Storage::url($cart->product->productGaleries->first()->photos) }}"
-                                                    alt="" class="cart-image" />
+                                                    alt="" class="cart-image w-80" />
                                             @endif
                                         </td>
                                         <td style="width: 30%">
@@ -50,8 +77,7 @@
                                             <div class="product-subtitle">by {{ $cart->product->user->name }}</div>
                                         </td>
                                         <td style="width: 20%">
-                                            <div class="product-title">${{ number_format($cart->product->price) }}
-                                            </div>
+                                            <div class="product-title">${{ number_format($cart->product->price) }}</div>
                                             <div class="product-subtitle">USD</div>
                                         </td>
                                         <td style="width: 14%">
@@ -70,9 +96,7 @@
                                                 class="form-remove-cart">
                                                 @method('DELETE')
                                                 @csrf
-                                                <button class="btn btn-remove-cart" type="submit">
-                                                    Remove
-                                                </button>
+                                                <button class="btn btn-remove-cart" type="submit">Remove</button>
                                             </form>
                                         </td>
                                     </tr>
@@ -89,66 +113,48 @@
                         <h2 class="mb-4">Shipping Details</h2>
                     </div>
                 </div>
-                <form action="{{ route('checkout') }}" id="locations" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('checkout') }}" id="checkout-form" method="POST" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="total_price" value="{{ $totalPrice }}">
-                    <div class="row mb-2" data-aos="fade-up" data-aos-delay="200">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="address_one">Address 1</label>
-                                <input type="text" class="form-control" id="address_one" name="address_one"
-                                    value="{{ $user->address->address_one ?? '' }}" />
+                    <input type="hidden" name="cart_ids" id="cart-ids" value="">
+                    <input type="hidden" name="total_price" id="total-price" value="{{ $totalPrice }}">
+                    <div class="row mb-1" data-aos="fade-up" data-aos-delay="200">
+                        <div class="col-12 col-md-4">
+                            <div class="product-title">Address I</div>
+                            <div class="product-subtitle">{{ $user->address->address_one ?? '' }}</div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="product-title">Address II</div>
+                            <div class="product-subtitle">{{ $user->address->address_two ?? '' }}</div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="product-title">Province</div>
+                            <div class="product-subtitle">
+                                @if ($user->address && $user->address->provinces_id)
+                                    {{ App\Models\Province::find($user->address->provinces_id)->name }}
+                                @else
+                                    (Belum diatur)
+                                @endif
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="address_two">Address 2</label>
-                                <input type="text" class="form-control" id="address_two" name="address_two"
-                                    value="{{ $user->address->address_two ?? '' }}" />
+                    </div>
+                    <div class="row mb-1" data-aos="fade-up" data-aos-delay="250">
+                        <div class="col-12 col-md-4">
+                            <div class="product-title">City</div>
+                            <div class="product-subtitle">
+                                @if ($user->address && $user->address->regencies_id)
+                                    {{ App\Models\Regency::find($user->address->regencies_id)->name }}
+                                @else
+                                    (Belum diatur)
+                                @endif
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="provinces_id">Province</label>
-                                <select name="provinces_id" id="provinces_id" class="form-control" v-if="provinces"
-                                    v-model="provinces_id">
-                                    <option v-for="province in provinces" :value="province.id">@{{ province.name }}
-                                    </option>
-                                </select>
-                                <select v-else class="from-control" id=""></select>
-                            </div>
+                        <div class="col-12 col-md-4">
+                            <div class="product-title">Postal Code</div>
+                            <div class="product-subtitle">{{ $user->address->zip_code ?? '' }}</div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="regencies_id">City</label>
-                                <select name="regencies_id" id="regencies_id" class="form-control" v-if="regencies"
-                                    v-model="regencies_id">
-                                    <option v-for="regency in regencies" :value="regency.id">@{{ regency.name }}
-                                    </option>
-                                </select>
-                                <select v-else class="from-control" id=""></select>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="zip_code">Postal Code</label>
-                                <input type="text" class="form-control" id="zip_code" name="zip_code"
-                                    value="{{ $user->address->zip_code ?? '' }}" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="country">Country</label>
-                                <input type="text" class="form-control" id="country" name="country"
-                                    value="{{ $user->address->country ?? '' }}" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="phone_number">Mobile</label>
-                                <input type="text" class="form-control" id="phone_number" name="phone_number"
-                                    value="{{ $user->phone_number }}" />
-                            </div>
+                        <div class="col-12 col-md-4">
+                            <div class="product-title">Country</div>
+                            <div class="product-subtitle">{{ $user->address->country ?? '' }}</div>
                         </div>
                     </div>
                     <div class="row" data-aos="fade-up" data-aos-delay="150">
@@ -159,23 +165,28 @@
                             <h2 class="mb-2">Payment Information</h2>
                         </div>
                     </div>
-                    <div class="row" data-aos="fade-up" data-aos-delay="200">
+                    <div class="row" data-aos="fade-up" data-aos-delay="300">
                         <div class="col-4 col-md-2">
-                            <div class="product-title">$10</div>
+                            <div class="product-title">$0</div>
                             <div class="product-subtitle">Country Tax</div>
                         </div>
                         <div class="col-4 col-md-3">
-                            <div class="product-title">$280</div>
+                            <div class="product-title">$0</div>
                             <div class="product-subtitle">Product Insurance</div>
                         </div>
                         <div class="col-4 col-md-2">
-                            <div class="product-title">$580</div>
+                            <div class="product-title">$0</div>
                             <div class="product-subtitle">Ship to Jakarta</div>
                         </div>
                         <div class="col-4 col-md-2">
-                            <div class="product-title text-success">${{ number_format($totalPrice) }}</div>
+                            <div class="product-title text-success" id="total-price-display">
+                                ${{ number_format($totalPrice) }}
+                            </div>
                             <div class="product-subtitle">Total</div>
                         </div>
+                        {{-- <div class="col-12 text-right">
+                            <button type="submit" class="btn btn-success px-4 mt-2">Checkout Now</button>
+                        </div> --}}
                         <div class="col-8 col-md-3">
                             <button type="submit" class="btn btn-success mt-4 btn-block">Checkout Now</button>
                         </div>
@@ -189,171 +200,95 @@
 @push('addon-script')
     <script src="/vendor/vue/vue.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    {{-- <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('services.midtrans.client_key') }}">
+    </script> --}}
     <script>
-        var locations = new Vue({
-            el: "#locations",
-            mounted() {
-                AOS.init();
-                this.getProvincesData();
-            },
-            data: {
-                provinces: null,
-                regencies: null,
-                provinces_id: null,
-                regencies_id: null
-            },
-            methods: {
-                getProvincesData() {
-                    var self = this;
-                    axios.get('{{ route('api-provinces') }}')
-                        .then(function(response) {
-                            self.provinces = response.data;
-                        })
-                },
-                getRegenciesData() {
-                    var self = this;
-                    axios.get('{{ url('regencies') }}/' + self.provinces_id)
-                        .then(function(response) {
-                            self.regencies = response.data;
-                        })
-                },
-            },
-            watch: {
-                provinces_id: function(val, oldVal) {
-                    this.regencies_id = null;
-                    this.getRegenciesData();
-                },
-            }
-        });
-
         document.addEventListener('DOMContentLoaded', function() {
-            // quantity cart icon (+ -)
-            document.querySelectorAll('.btn-decrement').forEach(button => {
+            const productCheckboxes = document.querySelectorAll('.product-checkbox');
+            const selectAllCheckbox = document.getElementById('select-all');
+            const cartIdsInput = document.getElementById('cart-ids');
+            const totalPriceInput = document.getElementById('total-price');
+            let selectedCartIds = [];
+            let totalPrice = 0;
+
+            selectAllCheckbox.addEventListener('change', function() {
+                selectedCartIds = [];
+                totalPrice = 0;
+
+                productCheckboxes.forEach(checkbox => {
+                    checkbox.checked = selectAllCheckbox.checked;
+
+                    if (checkbox.checked) {
+                        selectedCartIds.push(checkbox.dataset.id);
+                        totalPrice += parseInt(checkbox.dataset.price) * parseInt(checkbox.dataset
+                            .quantity);
+                    }
+                });
+
+                cartIdsInput.value = selectedCartIds.join(',');
+                totalPriceInput.value = totalPrice;
+            });
+
+            productCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    if (checkbox.checked) {
+                        selectedCartIds.push(checkbox.dataset.id);
+                        totalPrice += parseInt(checkbox.dataset.price) * parseInt(checkbox.dataset
+                            .quantity);
+                    } else {
+                        selectedCartIds = selectedCartIds.filter(id => id !== checkbox.dataset.id);
+                        totalPrice -= parseInt(checkbox.dataset.price) * parseInt(checkbox.dataset
+                            .quantity);
+                    }
+
+                    cartIdsInput.value = selectedCartIds.join(',');
+                    totalPriceInput.value = totalPrice;
+                });
+            });
+
+            const decrementButtons = document.querySelectorAll('.btn-decrement');
+            const incrementButtons = document.querySelectorAll('.btn-increment');
+
+            decrementButtons.forEach(button => {
                 button.addEventListener('click', function() {
-                    let quantityInput = this.nextElementSibling;
-                    let currentQuantity = parseInt(quantityInput.value);
-                    if (currentQuantity > 1) {
-                        updateQuantity(this.dataset.id, currentQuantity - 1, quantityInput);
+                    const cartId = button.dataset.id;
+                    const quantityInput = button.nextElementSibling;
+                    let quantity = parseInt(quantityInput.value);
+
+                    if (quantity > 1) {
+                        quantity--;
+                        quantityInput.value = quantity;
+
+                        const checkbox = document.querySelector(
+                            `.product-checkbox[data-id="${cartId}"]`);
+                        if (checkbox.checked) {
+                            totalPrice -= parseInt(checkbox.dataset.price);
+                            totalPriceInput.value = totalPrice;
+                        }
                     }
                 });
             });
 
-            document.querySelectorAll('.btn-increment').forEach(button => {
+            incrementButtons.forEach(button => {
                 button.addEventListener('click', function() {
-                    let quantityInput = this.previousElementSibling;
-                    let currentQuantity = parseInt(quantityInput.value);
-                    let maxQuantity = parseInt(quantityInput.max);
-                    if (currentQuantity < maxQuantity) {
-                        updateQuantity(this.dataset.id, currentQuantity + 1, quantityInput);
-                    }
-                });
-            });
+                    const cartId = button.dataset.id;
+                    const quantityInput = button.previousElementSibling;
+                    const maxQuantity = parseInt(quantityInput.max);
+                    let quantity = parseInt(quantityInput.value);
 
-            document.querySelectorAll('.form-remove-cart').forEach(form => {
-                form.addEventListener('submit', function(event) {
-                    event.preventDefault();
-                    removeCartItem(this);
+                    if (quantity < maxQuantity) {
+                        quantity++;
+                        quantityInput.value = quantity;
+
+                        const checkbox = document.querySelector(
+                            `.product-checkbox[data-id="${cartId}"]`);
+                        if (checkbox.checked) {
+                            totalPrice += parseInt(checkbox.dataset.price);
+                            totalPriceInput.value = totalPrice;
+                        }
+                    }
                 });
             });
         });
-
-        function updateQuantity(cartItemId, newQuantity, quantityInput) {
-            fetch(`/cart-products/${cartItemId}/update-quantity`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({
-                        quantity: newQuantity
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        quantityInput.value = newQuantity;
-                        const totalPriceElement = quantityInput.closest('tr').querySelector('.product-total-price');
-                        totalPriceElement.textContent = `$${data.newTotalPrice.toFixed(2)}`;
-
-                        const totalCartPriceElement = document.getElementById('totalCartPrice');
-                        totalCartPriceElement.textContent = `$${data.totalCartPrice.toFixed(2)}`;
-                    } else {
-                        alert('Failed to update quantity.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
-
-        function removeCartItem(form) {
-            const action = form.action;
-            fetch(action, {
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        form.closest('tr').remove();
-                        const totalCartPriceElement = document.getElementById('totalCartPrice');
-                        totalCartPriceElement.textContent = `$${data.totalCartPrice.toFixed(2)}`;
-                    } else {
-                        alert('Failed to remove cart item.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
     </script>
-@endpush
-
-@push('addon-style')
-    <style>
-        .quantity-control {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .quantity-control button {
-            background-color: #f8f9fa;
-            border: 1px solid #ced4da;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-        }
-
-        .quantity-control input {
-            width: 50px;
-            text-align: center;
-            border: 1px solid #ced4da;
-        }
-
-        .btn-remove-cart {
-            background-color: #e3342f;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-        }
-
-        .btn-remove-cart:hover {
-            background-color: #cc1f1a;
-        }
-
-        .product-title {
-            font-weight: bold;
-        }
-
-        .product-subtitle {
-            color: #6c757d;
-        }
-    </style>
 @endpush

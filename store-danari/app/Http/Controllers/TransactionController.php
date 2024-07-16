@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Product;
@@ -7,6 +6,7 @@ use App\Models\Transaction;
 use App\Models\TransactionDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
 {
@@ -38,7 +38,7 @@ class TransactionController extends Controller
                 ->orderByDesc('id')->paginate(5);
         } elseif ($role === 'customer') {
             $transactions = TransactionDetail::with(['transaction.user', 'product.productGaleries'])
-                ->whereHas('transaction',function($query) use($user){
+                ->whereHas('transaction', function ($query) use ($user) {
                     $query->where('users_id', $user->id);
                 })
                 ->orderByDesc('id')
@@ -49,11 +49,36 @@ class TransactionController extends Controller
     }
 
     /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request, Transaction $transaction)
+    {
+        $data = $request->validate([
+            'shipping_status' => 'required|string',
+            'resi' => 'nullable|string',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $transaction->update($data);
+
+            DB::commit();
+
+            return redirect()->route('transactions.show', ['transaction' => $transaction->code])
+                ->with('success', 'Shipping status and Resi updated successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors('Error updating transaction: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Display the specified resource.
      */
     public function show(Transaction $transaction)
     {
-        $transaction->load(['details.product.productGaleries', 'user', 'details.product']);
+        $transaction->load(['details.product.productGaleries', 'user', 'user.address']);
         return view('frontend.transactions.show', compact('transaction'));
     }
 }

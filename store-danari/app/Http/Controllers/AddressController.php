@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UpdateAddressRequest;
-use App\Models\Address;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Models\Address;
+use App\Http\Requests\UpdateAddressRequest;
 
 class AddressController extends Controller
 {
@@ -16,7 +16,7 @@ class AddressController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $address = $user->address;
+        $address = $user->address ?? new Address();
         return view('auth.account-settings', compact('user', 'address'));
     }
 
@@ -31,47 +31,19 @@ class AddressController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Address $address)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Address $address)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateAddressRequest $request, Address $address)
+    public function store(UpdateAddressRequest $request)
     {
         $user = Auth::user();
-        $address = $user->address;
+        $address = $user->address ?? new Address();
 
-        DB::transaction(function () use ($address, $request) {
+        DB::transaction(function () use ($user, $address, $request) {
             $validated = $request->validated();
-            $address->update($validated);
+            $address->fill($validated);
+            $address->user_id = $user->id;
+            $address->save();
+            $user->update(['phone_number' => $request->phone_number]); // Update phone number
         });
-        return redirect()->route('account.settings', compact('user', 'address'))->with(['success' => 'Account settings updated successfully.']);
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Address $address)
-    {
-        //
+        return redirect()->route('account-settings.index')->with('success', 'Account Settings successfully updated.');
     }
 }

@@ -14,15 +14,22 @@ class CartController extends Controller
 {
     public function index()
     {
-        $user = Auth::user(); // Fetch the user object instead of just the ID
-        $cartItems = Cart::with(['product', 'product.user'])->where('users_id', $user->id)->get();
-        $totalPrice = $cartItems->sum(function ($cartItem) {
-            return $cartItem->product->price * $cartItem->quantity;
-        });
+        $user = Auth::user();
+        $cartItems = Cart::with(['product.productGaleries', 'product.user'])
+            ->where('users_id', $user->id)
+            ->get();
 
-        return view('frontend.cart', compact('cartItems', 'totalPrice', 'user'));
+        // $totalPrice = $cartItems->sum(function ($cart) {
+        //     return $cart->product->price * $cart->quantity;
+        // });
+
+        $totalPrice = 0;
+        foreach ($cartItems as $cart) {
+            $totalPrice += $cart->quantity * $cart->product->price;
+        }
+
+        return view('frontend.cart', compact('cartItems', 'user', 'totalPrice'));
     }
-
 
     public function store(StoreAddToCartRequest $request)
     {
@@ -53,59 +60,68 @@ class CartController extends Controller
         return redirect()->route('cart-products.index');
     }
 
-    public function updateQuantity(Request $request, $id)
+    // public function update(Request $request, $id)
+    // {
+    //     $cart = Cart::findOrFail($id);
+    //     $cart->quantity = $request->quantity;
+    //     $cart->save();
+
+    //     $totalPrice = Cart::where('users_id', Auth::id())->sum(function ($cart) {
+    //         return $cart->product->price * $cart->quantity;
+    //     });
+
+    //     return response()->json(['success' => true, 'totalPrice' => $totalPrice]);
+    // }
+
+    // public function update(Request $request, $id)
+    // {
+    //     $cart = Cart::findOrFail($id);
+    //     $oldQuantity = $cart->quantity; // Simpan kuantitas sebelumnya untuk perhitungan stok produk
+
+    //     $cart->quantity = $request->quantity;
+    //     $cart->save();
+
+    //     // Perbarui stok produk hanya jika kuantitas berubah
+    //     if ($cart->quantity !== $oldQuantity) {
+    //         $product = $cart->product;
+    //         $product->stock += $oldQuantity - $cart->quantity;
+    //         $product->save();
+    //     }
+
+    //     // Hitung total harga setelah perubahan kuantitas
+    //     $totalPrice = Cart::where('users_id', Auth::id())->sum(function ($cart) {
+    //         return $cart->product->price * $cart->quantity;
+    //     });
+
+    //     return response()->json(['success' => true, 'totalPrice' => $totalPrice]);
+    // }
+
+    public function update(Request $request, $id)
     {
-        $cartItem = Cart::with('product')->where('id', $id)->where('users_id', Auth::id())->firstOrFail();
-        $newQuantity = $request->quantity;
+        $cart = Cart::findOrFail($id);
+        $oldQuantity = $cart->quantity;
 
-        if ($newQuantity <= $cartItem->product->stock) {
-            $cartItem->quantity = $newQuantity;
-            $cartItem->save();
+        $cart->quantity = $request->quantity;
+        $cart->save();
 
-            $totalPrice = $cartItem->product->price * $cartItem->quantity;
-
-            return response()->json(['success' => true, 'newTotalPrice' => $totalPrice]);
+        // Update product stock only if quantity has changed
+        if ($cart->quantity !== $oldQuantity) {
+            $product = $cart->product;
+            $product->stock += $oldQuantity - $cart->quantity;
+            $product->save();
         }
 
-        return response()->json(['success' => false, 'message' => 'Not enough stock available.']);
+        return response()->json(['success' => true, 'quantity' => $cart->quantity]);
     }
-
 
     public function destroy($id)
     {
         DB::transaction(function () use ($id) {
-            $cartItem = Cart::findOrFail($id);
-            $cartItem->delete();
-            Session::flash('success', 'Product removed from cart successfully.');
+            $cart = Cart::findOrFail($id);
+            $cart->delete();
         });
 
-        return response()->json(['success' => true]);
+        return redirect()->route('cart-products.index');
     }
 
-    public function checkoutSuccess()
-    {
-        return view('frontend.checkout-success');
-    }
-    // public function checkout(Request $request)
-    // {
-    //     $user = Auth::user();
-    //     $cartItems = Cart::with('product')->where('users_id', $user->id)->get();
-
-    //     DB::transaction(function () use ($cartItems) {
-    //         foreach ($cartItems as $cartItem) {
-    //             $product = $cartItem->product;
-    //             if ($product->stock < $cartItem->quantity) {
-    //                 throw new \Exception('Product stock is insufficient.');
-    //             }
-
-    //             $product->stock -= $cartItem->quantity;
-    //             $product->save();
-
-    //             $cartItem->delete();
-    //         }
-    //     });
-
-    //     Session::flash('success', 'Checkout successful.');
-    //     return redirect()->route('cart-products.index');
-    // }
 }

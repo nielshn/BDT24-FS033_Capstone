@@ -57,7 +57,7 @@
                     <x-nav-link :href="route('store-settings.index')" :active="request()->routeIs('store-settings.index')">
                         {{ __('Store Settings') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('dashboard.accountSettings')" :active="request()->routeIs('dashboard.accountSettings')">
+                    <x-nav-link :href="route('account-settings.index')" :active="request()->routeIs('account-settings.index')">
                         {{ __('My Account') }}
                     </x-nav-link>
                 @endrole
@@ -68,7 +68,7 @@
                     <x-nav-link :href="route('transactions.index')" :active="request()->is('transactions*')">
                         {{ __('Transactions') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('dashboard.accountSettings')" :active="request()->routeIs('dashboard.accountSettings')">
+                    <x-nav-link :href="route('account-settings.index')" :active="request()->routeIs('account-settings.index')">
                         {{ __('My Account') }}
                     </x-nav-link>
                 @endrole
@@ -128,7 +128,7 @@
                                 {{ __('Profile') }}
                             </x-dropdown-link>
                             <a href="{{ route('front.home') }}" class="dropdown-item">Home</a>
-                            <a href="{{ route('dashboard.accountSettings') }}" class="dropdown-item">Settings</a>
+                            <a href="{{ route('account-settings.index') }}" class="dropdown-item">Settings</a>
                             <div class="dropdown-divider"></div>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
