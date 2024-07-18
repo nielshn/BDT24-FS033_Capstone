@@ -11,7 +11,7 @@
     {{-- Style --}}
     @stack('prepend-style')
     @include('includes.style')
-    @stack('addon-script')
+    @stack('addon-style')
 </head>
 
 <body>

@@ -5,44 +5,42 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\Transaction;
 use App\Models\TransactionDetail;
-use App\Models\Address;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Midtrans\Config;
 use Midtrans\Notification;
 use Midtrans\Snap;
 
 class CheckoutController extends Controller
 {
-
     public function process(Request $request)
     {
         $user = Auth::user();
+        $code = 'STORE-' . mt_rand(0000000, 9999999);
+        $selectedCartIds = explode(',', $request->cart_ids);
+        $totalPrice = $request->input('total_price');
 
         // Check if address exists, if not create one
         $address = $user->address;
         if (!$address) {
-            return redirect()->route('cart-products.index')->with('error', 'Mohon atur alamat pengiriman Anda terlebih dahulu.');
+            return redirect()->route('cartItem-products.index')->with('error', 'Mohon atur alamat pengiriman Anda terlebih dahulu.');
         }
 
-        // process checkout
-        $code = 'STORE-' . mt_rand(0000000, 9999999);
-        $cartIds = explode(',', $request->cart_ids);
-
-        if (empty($cartIds)) {
+        if (empty($selectedCartIds)) {
             return redirect()->back()->with('error', 'No products selected for checkout.');
         }
 
-        $carts = Cart::whereIn('id', $cartIds)->with('product')->get();
-        $totalPrice = $carts->sum(fn ($cart) => $cart->quantity * $cart->product->price);
+        $cartItems = Cart::whereIn('id', $selectedCartIds)->with('product')->get();
+        $totalPrice = $cartItems->sum(fn ($cartItem) => $cartItem->quantity * $cartItem->product->price);
 
         // Ensure total price is greater than 0
         if ($totalPrice <= 0) {
             return redirect()->back()->with('error', 'Total price must be greater than zero.');
         }
 
-        // Transaction create
+        // Create transaction
         $transaction = Transaction::create([
             'users_id' => $user->id,
             'insurance_price' => 0,
@@ -52,24 +50,28 @@ class CheckoutController extends Controller
             'code' => $code,
         ]);
 
-        foreach ($carts as $cart) {
+        foreach ($cartItems as $cartItem) {
             $trx = 'TRX' . mt_rand(0000000, 9999999);
-
+            $quantity = $request->input('quantity_' . $cartItem->id);
+            if ($quantity) {
+                $cartItem->quantity = $quantity;
+                $cartItem->save();
+            }
             TransactionDetail::create([
                 'transactions_id' => $transaction->id,
-                'products_id' => $cart->product->id,
-                'price' => $cart->quantity * $cart->product->price,
+                'products_id' => $cartItem->product->id,
+                'price' => $cartItem->quantity * $cartItem->product->price,
                 'shipping_status' => 'PENDING',
                 'resi' => '',
                 'code' => $trx,
             ]);
 
-            // Reduce product stock
-            $cart->product->decrement('stock', $cart->quantity);
+            $product = $cartItem->product;
+            $product->decrement('stock', $cartItem->quantity);
         }
 
         // Clear selected cart items
-        Cart::whereIn('id', $cartIds)->delete();
+        Cart::whereIn('id', $selectedCartIds)->delete();
 
         // Configuration Midtrans
         Config::$serverKey = config('services.midtrans.server_key');
@@ -77,10 +79,10 @@ class CheckoutController extends Controller
         Config::$isSanitized = config('services.midtrans.is_sanitized');
         Config::$is3ds = config('services.midtrans.is3ds');
 
-        $midtrans = [
+        $params = [
             'transaction_details' => [
                 'order_id' => $code,
-                'gross_amount' => (int) $totalPrice,
+                'gross_amount' => $totalPrice,
             ],
             'customer_details' => [
                 'first_name' => $user->name,
@@ -92,19 +94,24 @@ class CheckoutController extends Controller
             ],
             'credit_card' => [
                 'secure' => true
-            ]
+            ],
+            'item_details' => $cartItems->map(function ($cartItem) {
+                return [
+                    'id' => $cartItem->product->id,
+                    'price' => $cartItem->product->price,
+                    'quantity' => $cartItem->quantity,
+                    'name' => $cartItem->product->name,
+                ];
+            })->toArray(),
         ];
 
         try {
-            // Get Snap Payment Page URL
-            $paymentUrl = Snap::createTransaction($midtrans)->redirect_url;
-            // Redirect to Snap Payment Page
-            return redirect($paymentUrl);
+            $snapToken = Snap::getSnapToken($params);
+            return view('frontend.checkout-success', compact('snapToken', 'totalPrice'));
         } catch (Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
-
 
     public function callback(Request $request)
     {
@@ -122,66 +129,50 @@ class CheckoutController extends Controller
         $fraud = $notification->fraud_status;
         $order_id = $notification->order_id;
 
-        // Cari transaksi berdasarkan ID
-        $transaction = Transaction::findOrFail($order_id);
+        // Extract the transaction code from the order_id
+        $code = explode('-', $order_id)[1];
+
+        // Find transaction by code
+        $transaction = Transaction::where('code', $code)->firstOrFail();
+
+        // Log received status for debugging
+        Log::info("Midtrans Notification Received for Order ID: {$order_id} with status: {$status}");
 
         // Handle notification status midtrans
         if ($status == 'capture') {
             if ($type == 'credit_card') {
                 if ($fraud == 'challenge') {
-                    $transaction->status = 'PENDING';
+                    $transaction->transaction_status = 'PENDING';
                 } else {
-                    $transaction->status = 'SUCCESS';
+                    $transaction->transaction_status = 'SUCCESS';
                 }
             }
-        } else if ($status == 'settlement') {
-            $transaction->status = 'SUCCESS';
-        } else if ($status == 'pending') {
-            $transaction->status = 'PENDING';
-        } else if ($status == 'deny') {
-            $transaction->status = 'CANCELLED';
-        } else if ($status == 'expire') {
-            $transaction->status = 'CANCELLED';
-        } else if ($status == 'cancel') {
-            $transaction->status = 'CANCELLED';
+        } elseif ($status == 'settlement') {
+            $transaction->transaction_status = 'SUCCESS';
+        } elseif ($status == 'pending') {
+            $transaction->transaction_status = 'PENDING';
+        } elseif ($status == 'deny') {
+            $transaction->transaction_status = 'CANCELLED';
+        } elseif ($status == 'expire') {
+            $transaction->transaction_status = 'CANCELLED';
+        } elseif ($status == 'cancel') {
+            $transaction->transaction_status = 'CANCELLED';
         }
 
-        // Simpan transaksi
+        // Save transaction
         $transaction->save();
 
-        // Kirimkan email
-        if ($transaction) {
-            if ($status == 'capture' && $fraud == 'accept') {
-                //
-            } else if ($status == 'settlement') {
-                //
-            } else if ($status == 'success') {
-                //
-            } else if ($status == 'capture' && $fraud == 'challenge') {
-                return response()->json([
-                    'meta' => [
-                        'code' => 200,
-                        'message' => 'Midtrans Payment Challenge'
-                    ]
-                ]);
-            } else {
-                return response()->json([
-                    'meta' => [
-                        'code' => 200,
-                        'message' => 'Midtrans Payment not Settlement'
-                    ]
-                ]);
-            }
+        // Log transaction update for debugging
+        Log::info("Transaction Status Updated to: {$transaction->transaction_status} for Order ID: {$order_id}");
 
-            return response()->json([
-                'meta' => [
-                    'code' => 200,
-                    'message' => 'Midtrans Notification Success'
-                ]
-            ]);
-        }
+        // Send response to Midtrans
+        return response()->json([
+            'meta' => [
+                'code' => 200,
+                'message' => 'Midtrans Notification Success'
+            ]
+        ]);
     }
-
 
     public function checkoutSuccess()
     {

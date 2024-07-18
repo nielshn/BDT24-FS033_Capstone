@@ -32,10 +32,9 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="category">Category</label>
-                                                <select name="categories_id" id="category" class="form-control"
-                                                    disabled>
-                                                    {{-- <option value="{{ $store->categories_id }}" disabled>Select Category
-                                                    </option> --}}
+                                                <select name="categories_id" id="category" class="form-control">
+                                                    <option value="{{ $store->categories_id }}" disabled>Select Category
+                                                    </option>
                                                     @foreach ($categories as $category)
                                                         <option value="{{ $category->id }}"
                                                             {{ $store->categories_id == $category->id ? 'selected' : '' }}>

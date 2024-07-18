@@ -22,7 +22,11 @@ class StoreSettingsController extends Controller
         }
 
         $store = $user->store;
-        $categories = Category::orderByDesc('id')->get();
+
+        // Ambil kategori yang terkait dengan toko pengguna
+        $categories = Category::whereHas('stores', function ($query) use ($store) {
+            $query->where('id', $store->id);
+        })->get();
 
         return view('frontend.store-settings', compact('store', 'categories'));
     }

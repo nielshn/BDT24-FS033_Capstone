@@ -184,9 +184,6 @@
                             </div>
                             <div class="product-subtitle">Total</div>
                         </div>
-                        {{-- <div class="col-12 text-right">
-                            <button type="submit" class="btn btn-success px-4 mt-2">Checkout Now</button>
-                        </div> --}}
                         <div class="col-8 col-md-3">
                             <button type="submit" class="btn btn-success mt-4 btn-block">Checkout Now</button>
                         </div>
@@ -200,14 +197,15 @@
 @push('addon-script')
     <script src="/vendor/vue/vue.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    {{-- <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('services.midtrans.client_key') }}">
-    </script> --}}
-    <script>
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js"
+        data-client-key="{{ config('services.midtrans.client_key') }}"></script>
+    {{-- <script>
         document.addEventListener('DOMContentLoaded', function() {
             const productCheckboxes = document.querySelectorAll('.product-checkbox');
             const selectAllCheckbox = document.getElementById('select-all');
             const cartIdsInput = document.getElementById('cart-ids');
             const totalPriceInput = document.getElementById('total-price');
+            const totalPriceDisplay = document.getElementById('total-price-display');
             let selectedCartIds = [];
             let totalPrice = 0;
 
@@ -227,6 +225,7 @@
 
                 cartIdsInput.value = selectedCartIds.join(',');
                 totalPriceInput.value = totalPrice;
+                totalPriceDisplay.textContent = `$${totalPrice.toLocaleString()}`;
             });
 
             productCheckboxes.forEach(checkbox => {
@@ -243,6 +242,7 @@
 
                     cartIdsInput.value = selectedCartIds.join(',');
                     totalPriceInput.value = totalPrice;
+                    totalPriceDisplay.textContent = `$${totalPrice.toLocaleString()}`;
                 });
             });
 
@@ -264,6 +264,7 @@
                         if (checkbox.checked) {
                             totalPrice -= parseInt(checkbox.dataset.price);
                             totalPriceInput.value = totalPrice;
+                            totalPriceDisplay.textContent = `$${totalPrice.toLocaleString()}`;
                         }
                     }
                 });
@@ -285,10 +286,85 @@
                         if (checkbox.checked) {
                             totalPrice += parseInt(checkbox.dataset.price);
                             totalPriceInput.value = totalPrice;
+                            totalPriceDisplay.textContent = `$${totalPrice.toLocaleString()}`;
                         }
                     }
                 });
             });
         });
+    </script> --}}
+    <script>
+        const selectedCartItems = [];
+
+        document.querySelectorAll('.product-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                updateSelectedItems(this);
+            });
+        });
+
+        function updateSelectedItems(checkbox) {
+            const cartId = checkbox.dataset.id;
+            const price = parseFloat(checkbox.dataset.price);
+            const quantity = parseInt(checkbox.dataset.quantity);
+
+            if (checkbox.checked) {
+                selectedCartItems.push({
+                    id: cartId,
+                    price: price,
+                    quantity: quantity
+                });
+            } else {
+                const index = selectedCartItems.findIndex(item => item.id == cartId);
+                if (index > -1) {
+                    selectedCartItems.splice(index, 1);
+                }
+            }
+            updateTotalPrice();
+            updateCartIds();
+        }
+
+        function updateTotalPrice() {
+            let totalPrice = 0;
+            selectedCartItems.forEach(item => {
+                totalPrice += item.price * item.quantity;
+            });
+            document.getElementById('total-price-display').innerText = `$${totalPrice.toFixed(2)}`;
+            document.getElementById('total-price').value = totalPrice.toFixed(2);
+        }
+
+        function updateCartIds() {
+            const selectedIds = selectedCartItems.map(item => item.id).join(',');
+            document.getElementById('cart-ids').value = selectedIds;
+        }
+
+        document.querySelectorAll('.btn-increment, .btn-decrement').forEach(button => {
+            button.addEventListener('click', function() {
+                updateQuantity(this);
+            });
+        });
+
+        function updateQuantity(button) {
+            const cartId = button.dataset.id;
+            const inputField = button.parentNode.querySelector('input[name="quantity"]');
+            let quantity = parseInt(inputField.value);
+
+            if (button.classList.contains('btn-increment')) {
+                quantity++;
+            } else {
+                if (quantity > 1) {
+                    quantity--;
+                }
+            }
+
+            inputField.value = quantity;
+            const checkbox = document.querySelector(`.product-checkbox[data-id="${cartId}"]`);
+            if (checkbox.checked) {
+                const item = selectedCartItems.find(item => item.id == cartId);
+                if (item) {
+                    item.quantity = quantity;
+                    updateTotalPrice();
+                }
+            }
+        }
     </script>
 @endpush

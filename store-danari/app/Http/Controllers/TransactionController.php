@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Product;
@@ -7,6 +8,7 @@ use App\Models\TransactionDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 class TransactionController extends Controller
 {
@@ -51,25 +53,35 @@ class TransactionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+
     public function store(Request $request, Transaction $transaction)
     {
-        $data = $request->validate([
-            'shipping_status' => 'required|string',
-            'resi' => 'nullable|string',
-        ]);
+        $user = Auth::user();
 
-        try {
-            DB::beginTransaction();
+        // Check if the user is a seller and owns the product in the transaction
+        $transactionDetail = $transaction->details->first();
+        if ($user->hasRole('seller') && $transactionDetail && $transactionDetail->product->users_id == $user->id) {
+            $data = $request->validate([
+                'shipping_status' => 'required|string',
+                'resi' => 'nullable|string',
+            ]);
 
-            $transaction->update($data);
+            try {
+                DB::beginTransaction();
 
-            DB::commit();
+                $transactionDetail->update($data);
 
-            return redirect()->route('transactions.show', ['transaction' => $transaction->code])
-                ->with('success', 'Shipping status and Resi updated successfully.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->withErrors('Error updating transaction: ' . $e->getMessage());
+                DB::commit();
+
+                return redirect()->route('transactions.show', ['transaction' => $transaction->id])
+                    ->with('success', 'Shipping status and Resi updated successfully.');
+            } catch (\Exception $e) {
+                DB::rollBack();
+                Session::flash('error', 'Error updating transaction: ' . $e->getMessage());
+                return back();
+            }
+        } else {
+            return back()->withErrors('Unauthorized action.');
         }
     }
 

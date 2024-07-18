@@ -75,8 +75,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
     Route::resource('transactions', TransactionController::class)
-        ->parameters(['transactions' => 'transaction:code'])
-        ->only(['index', 'store', 'show']);
+    ->parameters(['transactions' => 'transaction:code'])
+    ->only(['index', 'store', 'show']);
+
+    // Route::post('/transactions/{transaction}/update', [TransactionController::class, 'store'])->name('transactions.store');
 
 
     Route::resource('store-settings', StoreSettingsController::class)

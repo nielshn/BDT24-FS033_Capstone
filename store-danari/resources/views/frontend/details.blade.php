@@ -132,7 +132,7 @@
                             <h5>Related Products</h5>
                         </div>
                     </div>
-                    <div class="row" data-aos="fade-up" data-aos-delay="200">
+                    <div class="row" z>
                         <div id="relatedProductsCarousel" class="carousel slide" data-ride="carousel">
                             <div class="carousel-inner">
                                 @foreach ($relatedProducts->chunk(4) as $index => $chunk)
