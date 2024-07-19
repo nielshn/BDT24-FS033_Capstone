@@ -64,13 +64,13 @@
                                             </div>
                                         </div>
                                     @endforeach
-                                    <div class="row mt-4">
+                                    {{-- <div class="row mt-4">
                                         <div class="col-12 text-right">
                                             <h5>
                                                 Total Amount: ${{ number_format($transaction->total_price) }}
                                             </h5>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 @endrole
                                 @role('seller|admin')
                                     <div class="row mb-4">

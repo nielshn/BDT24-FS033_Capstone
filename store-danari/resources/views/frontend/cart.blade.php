@@ -199,102 +199,8 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://app.sandbox.midtrans.com/snap/snap.js"
         data-client-key="{{ config('services.midtrans.client_key') }}"></script>
-    {{-- <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const productCheckboxes = document.querySelectorAll('.product-checkbox');
-            const selectAllCheckbox = document.getElementById('select-all');
-            const cartIdsInput = document.getElementById('cart-ids');
-            const totalPriceInput = document.getElementById('total-price');
-            const totalPriceDisplay = document.getElementById('total-price-display');
-            let selectedCartIds = [];
-            let totalPrice = 0;
-
-            selectAllCheckbox.addEventListener('change', function() {
-                selectedCartIds = [];
-                totalPrice = 0;
-
-                productCheckboxes.forEach(checkbox => {
-                    checkbox.checked = selectAllCheckbox.checked;
-
-                    if (checkbox.checked) {
-                        selectedCartIds.push(checkbox.dataset.id);
-                        totalPrice += parseInt(checkbox.dataset.price) * parseInt(checkbox.dataset
-                            .quantity);
-                    }
-                });
-
-                cartIdsInput.value = selectedCartIds.join(',');
-                totalPriceInput.value = totalPrice;
-                totalPriceDisplay.textContent = `$${totalPrice.toLocaleString()}`;
-            });
-
-            productCheckboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
-                    if (checkbox.checked) {
-                        selectedCartIds.push(checkbox.dataset.id);
-                        totalPrice += parseInt(checkbox.dataset.price) * parseInt(checkbox.dataset
-                            .quantity);
-                    } else {
-                        selectedCartIds = selectedCartIds.filter(id => id !== checkbox.dataset.id);
-                        totalPrice -= parseInt(checkbox.dataset.price) * parseInt(checkbox.dataset
-                            .quantity);
-                    }
-
-                    cartIdsInput.value = selectedCartIds.join(',');
-                    totalPriceInput.value = totalPrice;
-                    totalPriceDisplay.textContent = `$${totalPrice.toLocaleString()}`;
-                });
-            });
-
-            const decrementButtons = document.querySelectorAll('.btn-decrement');
-            const incrementButtons = document.querySelectorAll('.btn-increment');
-
-            decrementButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const cartId = button.dataset.id;
-                    const quantityInput = button.nextElementSibling;
-                    let quantity = parseInt(quantityInput.value);
-
-                    if (quantity > 1) {
-                        quantity--;
-                        quantityInput.value = quantity;
-
-                        const checkbox = document.querySelector(
-                            `.product-checkbox[data-id="${cartId}"]`);
-                        if (checkbox.checked) {
-                            totalPrice -= parseInt(checkbox.dataset.price);
-                            totalPriceInput.value = totalPrice;
-                            totalPriceDisplay.textContent = `$${totalPrice.toLocaleString()}`;
-                        }
-                    }
-                });
-            });
-
-            incrementButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const cartId = button.dataset.id;
-                    const quantityInput = button.previousElementSibling;
-                    const maxQuantity = parseInt(quantityInput.max);
-                    let quantity = parseInt(quantityInput.value);
-
-                    if (quantity < maxQuantity) {
-                        quantity++;
-                        quantityInput.value = quantity;
-
-                        const checkbox = document.querySelector(
-                            `.product-checkbox[data-id="${cartId}"]`);
-                        if (checkbox.checked) {
-                            totalPrice += parseInt(checkbox.dataset.price);
-                            totalPriceInput.value = totalPrice;
-                            totalPriceDisplay.textContent = `$${totalPrice.toLocaleString()}`;
-                        }
-                    }
-                });
-            });
-        });
-    </script> --}}
-    <script>
-        const selectedCartItems = [];
+        <script>
+            const selectedCartItems = [];
 
         document.querySelectorAll('.product-checkbox').forEach(checkbox => {
             checkbox.addEventListener('change', function() {
@@ -368,3 +274,98 @@
         }
     </script>
 @endpush
+
+{{-- <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const productCheckboxes = document.querySelectorAll('.product-checkbox');
+        const selectAllCheckbox = document.getElementById('select-all');
+        const cartIdsInput = document.getElementById('cart-ids');
+        const totalPriceInput = document.getElementById('total-price');
+        const totalPriceDisplay = document.getElementById('total-price-display');
+        let selectedCartIds = [];
+        let totalPrice = 0;
+
+        selectAllCheckbox.addEventListener('change', function() {
+            selectedCartIds = [];
+            totalPrice = 0;
+
+            productCheckboxes.forEach(checkbox => {
+                checkbox.checked = selectAllCheckbox.checked;
+
+                if (checkbox.checked) {
+                    selectedCartIds.push(checkbox.dataset.id);
+                    totalPrice += parseInt(checkbox.dataset.price) * parseInt(checkbox.dataset
+                        .quantity);
+                }
+            });
+
+            cartIdsInput.value = selectedCartIds.join(',');
+            totalPriceInput.value = totalPrice;
+            totalPriceDisplay.textContent = `$${totalPrice.toLocaleString()}`;
+        });
+
+        productCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                if (checkbox.checked) {
+                    selectedCartIds.push(checkbox.dataset.id);
+                    totalPrice += parseInt(checkbox.dataset.price) * parseInt(checkbox.dataset
+                        .quantity);
+                } else {
+                    selectedCartIds = selectedCartIds.filter(id => id !== checkbox.dataset.id);
+                    totalPrice -= parseInt(checkbox.dataset.price) * parseInt(checkbox.dataset
+                        .quantity);
+                }
+
+                cartIdsInput.value = selectedCartIds.join(',');
+                totalPriceInput.value = totalPrice;
+                totalPriceDisplay.textContent = `$${totalPrice.toLocaleString()}`;
+            });
+        });
+
+        const decrementButtons = document.querySelectorAll('.btn-decrement');
+        const incrementButtons = document.querySelectorAll('.btn-increment');
+
+        decrementButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const cartId = button.dataset.id;
+                const quantityInput = button.nextElementSibling;
+                let quantity = parseInt(quantityInput.value);
+
+                if (quantity > 1) {
+                    quantity--;
+                    quantityInput.value = quantity;
+
+                    const checkbox = document.querySelector(
+                        `.product-checkbox[data-id="${cartId}"]`);
+                    if (checkbox.checked) {
+                        totalPrice -= parseInt(checkbox.dataset.price);
+                        totalPriceInput.value = totalPrice;
+                        totalPriceDisplay.textContent = `$${totalPrice.toLocaleString()}`;
+                    }
+                }
+            });
+        });
+
+        incrementButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const cartId = button.dataset.id;
+                const quantityInput = button.previousElementSibling;
+                const maxQuantity = parseInt(quantityInput.max);
+                let quantity = parseInt(quantityInput.value);
+
+                if (quantity < maxQuantity) {
+                    quantity++;
+                    quantityInput.value = quantity;
+
+                    const checkbox = document.querySelector(
+                        `.product-checkbox[data-id="${cartId}"]`);
+                    if (checkbox.checked) {
+                        totalPrice += parseInt(checkbox.dataset.price);
+                        totalPriceInput.value = totalPrice;
+                        totalPriceDisplay.textContent = `$${totalPrice.toLocaleString()}`;
+                    }
+                }
+            });
+        });
+    });
+</script> --}}
